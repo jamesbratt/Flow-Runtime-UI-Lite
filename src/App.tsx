@@ -1,26 +1,57 @@
 import React from 'react';
-import logo from './logo.svg';
+import Container from './components/Container';
+import Outcome from './components/Outcome';
+import { pathOr } from 'ramda';
+import { initializeFlow } from './actions';
+import { connect } from 'react-redux';
 import './App.css';
 
-const App: React.FC = () => {
+const App: React.FC = ({ pageStructure, initializeFlow }: any) => {
+
+  const init = () => {
+    initializeFlow(
+      '0a4605a9-7831-4fd7-b33c-0eec7aa6849e',
+      null,
+      '84980601-01a4-489c-bbff-870bd6a13120',
+    );
+  }
+
+  const mapElementInvokeResponses = pathOr([], ['mapElementInvokeResponses'], pageStructure);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <button onClick={init}>Initialize Flow</button>
+      {mapElementInvokeResponses.map((response: any) => {
+        const pageContainerResponses = pathOr([], ['pageResponse', 'pageContainerResponses'], response);
+        const pageContainerDataResponses = pathOr([], ['pageResponse', 'pageContainerDataResponses'], response);
+        const pageComponentResponses = pathOr([], ['pageResponse', 'pageComponentResponses'], response);
+        const pageComponentDataResponses = pathOr([], ['pageResponse', 'pageComponentDataResponses'], response);
+        const outcomeResponses = pathOr([], ['outcomeResponses'], response);
+        return (
+          <React.Fragment key={response.mapElementId}>
+            {pageContainerResponses.map((container: any) => {
+              return <Container
+                key={container.id}
+                container={container}
+                pageContainerDataResponses={pageContainerDataResponses}
+                pageComponentResponses={pageComponentResponses}
+                pageComponentDataResponses={pageComponentDataResponses}
+              />
+            })}
+            {outcomeResponses.map((outcome: any) => {
+              return <Outcome key={outcome.id} outcome={outcome} />
+            })}
+          </React.Fragment>
+        )
+      })}
     </div>
   );
 }
 
-export default App;
+const mapStateToProps = ({ pageStructure }: any) => ({ pageStructure }) 
+
+const mapDispatchToProps = {
+  initializeFlow
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
