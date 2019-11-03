@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 const Table: React.FC = ({ pageComponent, pageComponentDataResponses, mapElementInvokeResponse, setSelected }: any) => {
 
   const selectRow = (objectData: any, outcomeId: any) => {
-    setSelected(pageComponent.id, objectData.externalId)
+    setSelected(pageComponent.id, objectData.externalId, !objectData.isSelected)
   }
 
   const outcomes = mapElementInvokeResponse.outcomeResponses.filter((outcome: any) =>

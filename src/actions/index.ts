@@ -16,10 +16,10 @@ export const makeSelection = (pageComponent: any, outcomeId: string) => {
   }
 }
 
-export const setSelected = (pageComponentId: any, externalId: string) => {
+export const setSelected = (pageComponentId: any, externalId: string, isSelected: boolean) => {
   return {
     type: 'SET_SELECTED',
-    payload: { pageComponentId, externalId }
+    payload: { pageComponentId, externalId, isSelected }
   }
 }
 
@@ -53,7 +53,11 @@ export const initializeFlow = (id: string, versionId: string, manywhotenant: str
 
 export const moveFlow = (manywhotenant: string) => {
   return async (dispatch: any, getState: any) => {
-    const { pageState } = getState();
+    const { pageState, pageStructure } = getState();
+    const { currentMapElementId } = pageStructure;
+    const mapElementInvokeResponse = pageStructure.mapElementInvokeResponses.find(
+      (response: any) => response.mapElementId === currentMapElementId
+    );
 
     try {
       const moveResponse: any = await axios.post(

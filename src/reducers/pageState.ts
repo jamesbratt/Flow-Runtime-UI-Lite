@@ -1,16 +1,34 @@
 import { append } from "ramda";
 
 const pageStateReducer = (
-  invokeRequest: any = { pageComponents: [], pageIsMoving: false },
+  invokeRequest: any = { selectedObjects: [], pageIsMoving: false },
   action: any
 ): any => {
   switch (action.type) {
     case 'SET_SELECTED':
-      const { pageComponentId } = action.payload; 
+      const { pageComponentId, externalId, isSelected } = action.payload;
+
+      if (isSelected) {
+        const objectExists = invokeRequest.selectedObjects.find(
+          (obj: any) => obj.externalId === externalId
+        );
+
+        if (!objectExists) {
+          return {
+            ...invokeRequest,
+            selectedObjects: append({externalId, pageComponentId}, invokeRequest.selectedObjects)
+          }
+        }
+        return invokeRequest;
+      }
+
       return {
         ...invokeRequest,
-        pageComponents: append(pageComponentId, invokeRequest.pageComponents)
+        selectedObjects: invokeRequest.selectedObjects.filter(
+          (obj: any) => obj.externalId !== externalId
+        )
       }
+
     /*
     case 'SET_FLOW': {
       const {

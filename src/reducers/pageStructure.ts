@@ -6,7 +6,7 @@ const pageStructureReducer = (
 ): any => {
   switch (action.type) {
     case 'SET_SELECTED':
-      const { pageComponentId, externalId } = action.payload;
+      const { pageComponentId, externalId, isSelected } = action.payload;
       return {
         ...page,
         mapElementInvokeResponses: page.mapElementInvokeResponses.map((response: any) => {
@@ -23,13 +23,10 @@ const pageStructureReducer = (
                         if (od.externalId === externalId) {
                           return {
                             ...od,
-                            isSelected: true,
+                            isSelected: isSelected,
                           }
                         }
-                        return {
-                          ...od,
-                          isSelected: false,
-                        }
+                        return od
                       })
                     } 
                   } 
