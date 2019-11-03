@@ -1,18 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { moveFlow } from '../actions';
 
-const Outcome: React.FC = ({ outcome, pageStructure, moveFlow }: any) => {
+const Outcome: React.FC = ({ outcome, onClick, data }: any) => {
   return (
-    <button onClick={() => moveFlow(outcome.id, '84980601-01a4-489c-bbff-870bd6a13120')}>
+    <button onClick={() => onClick(data, outcome.id)}>
       {outcome.label}
     </button>
   );
 }
 
-const mapStateToProps = ({ pageStructure }: any) => ({ pageStructure }) 
-const mapDispatchToProps = {
-  moveFlow,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Outcome);
+export default Outcome;

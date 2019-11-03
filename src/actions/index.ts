@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { assocPath } from 'ramda';
 
 const baseUrl = 'https://flow.manywho.com';
 
@@ -7,6 +6,13 @@ export const setFlow = (invokeResponse: any) => {
   return {
     type: 'SET_FLOW',
     payload: invokeResponse
+  }
+}
+
+export const makeSelection = (pageComponent: any, outcomeId: string) => {
+  return {
+    type: 'MAKE_SELECTION',
+    payload: { pageComponent, outcomeId }
   }
 }
 
@@ -38,19 +44,14 @@ export const initializeFlow = (id: string, versionId: string, manywhotenant: str
   }
 }
 
-export const moveFlow = (outcomeId: string, manywhotenant: string) => {
+export const moveFlow = (manywhotenant: string) => {
   return async (dispatch: any, getState: any) => {
     const { pageState } = getState();
-    const pageStateWithOutcomeSpecified = assocPath(
-      ['mapElementInvokeRequest', 'selectedOutcomeId'],
-      outcomeId,
-      pageState
-    );
 
     try {
       const moveResponse: any = await axios.post(
-        `${baseUrl}/api/run/1/state/${pageState.stateId}`,
-        pageStateWithOutcomeSpecified,
+        `${baseUrl}/api/run/1/state/${pageState.state.stateId}`,
+        pageState.state,
         { headers: { manywhotenant } }
       ).catch(error => {
         throw Error(error.response.data)

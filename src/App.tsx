@@ -2,11 +2,15 @@ import React from 'react';
 import Container from './components/Container';
 import Outcome from './components/Outcome';
 import { pathOr } from 'ramda';
-import { initializeFlow } from './actions';
+import { initializeFlow, moveFlow } from './actions';
 import { connect } from 'react-redux';
 import './App.css';
 
-const App: React.FC = ({ pageStructure, initializeFlow }: any) => {
+const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow }: any) => {
+
+  if (pageState.pageIsMoving) {
+    moveFlow('84980601-01a4-489c-bbff-870bd6a13120');
+  } 
 
   const init = () => {
     initializeFlow(
@@ -38,8 +42,9 @@ const App: React.FC = ({ pageStructure, initializeFlow }: any) => {
                 pageComponentDataResponses={pageComponentDataResponses}
               />
             })}
-            {outcomeResponses.map((outcome: any) => {
-              return <Outcome key={outcome.id} outcome={outcome} />
+            {outcomeResponses.filter((outcome: any) => outcome.pageObjectBindingId)
+              .map((outcome: any) => {
+              <Outcome key={outcome.id} outcome={outcome} />
             })}
           </React.Fragment>
         )
@@ -48,10 +53,11 @@ const App: React.FC = ({ pageStructure, initializeFlow }: any) => {
   );
 }
 
-const mapStateToProps = ({ pageStructure }: any) => ({ pageStructure }) 
+const mapStateToProps = ({ pageStructure, pageState }: any) => ({ pageStructure, pageState }) 
 
 const mapDispatchToProps = {
-  initializeFlow
+  initializeFlow,
+  moveFlow
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

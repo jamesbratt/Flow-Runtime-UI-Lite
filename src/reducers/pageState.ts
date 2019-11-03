@@ -1,8 +1,38 @@
+import { append } from "ramda";
+
 const pageStateReducer = (
-  state = {},
+  page: any = { pageIsMoving: false, state: {} },
   action: any
 ): any => {
   switch (action.type) {
+    case 'MAKE_SELECTION': {
+      const { pageComponentInputResponses } = page.state.mapElementInvokeRequest.pageRequest;
+      const { pageComponentId } = action.payload.pageComponent;
+
+      const componentExists = pageComponentInputResponses.find((pcir: any) => pcir.pageComponentId === pageComponentId);
+
+      const updatedComponents = componentExists ? pageComponentInputResponses.map((pcir: any) => {
+        if (pcir.pageComponentId === pageComponentId) {
+          return action.payload.pageComponent;
+        }
+        return pcir;
+      }) : append(action.payload.pageComponent, pageComponentInputResponses);
+
+      return {
+        ...page,
+        state: {
+          ...page.state,
+          mapElementInvokeRequest: {
+            pageRequest: {
+              pageComponentInputResponses: updatedComponents
+            },
+            selectedOutcomeId: action.payload.outcomeId
+          }
+        },
+        pageIsMoving: action.payload.outcomeId ? true : null
+      }
+    }
+
     case 'SET_FLOW': {
       const {
         invokeType,
@@ -33,10 +63,13 @@ const pageStateReducer = (
         selectedNavigationElementId: null
       };
 
-      return initialPageState
+      return {
+        pageIsMoving: false,
+        state: initialPageState
+      }
     }
     default:
-      return state
+      return page
   }
 }
 
