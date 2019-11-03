@@ -16,6 +16,13 @@ export const makeSelection = (pageComponent: any, outcomeId: string) => {
   }
 }
 
+export const setSelected = (pageComponentId: any, externalId: string) => {
+  return {
+    type: 'SET_SELECTED',
+    payload: { pageComponentId, externalId }
+  }
+}
+
 export const initializeFlow = (id: string, versionId: string, manywhotenant: string) => {
   return async (dispatch: any) => {
 

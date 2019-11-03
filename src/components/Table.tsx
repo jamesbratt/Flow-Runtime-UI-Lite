@@ -1,18 +1,12 @@
 import React from 'react';
 import Outcome from './Outcome';
-import { makeSelection } from '../actions';
+import { setSelected } from '../actions';
 import { connect } from 'react-redux';
 
-const Table: React.FC = ({ pageComponent, pageComponentDataResponses, mapElementInvokeResponse, makeSelection }: any) => {
+const Table: React.FC = ({ pageComponent, pageComponentDataResponses, mapElementInvokeResponse, setSelected }: any) => {
 
   const selectRow = (objectData: any, outcomeId: any) => {
-    makeSelection({
-      pageComponentId: pageComponent.id,
-      objectData: [{
-        ...objectData,
-        isSelected: true,
-      }]
-    }, outcomeId)
+    setSelected(pageComponent.id, objectData.externalId)
   }
 
   const outcomes = mapElementInvokeResponse.outcomeResponses.filter((outcome: any) =>
@@ -28,7 +22,7 @@ const Table: React.FC = ({ pageComponent, pageComponentDataResponses, mapElement
   );
 
   const rows = tableData.objectData.map((row: any) => (
-    <tr onClick={() => selectRow(row, null)} key={row.externalId}>
+    <tr key={row.externalId}>
       {outcomes ? outcomes.map((outcome: any) => 
         <td key={outcome.id}><Outcome key={outcome.id} data={row} outcome={outcome} onClick={selectRow} /></td>)
       : null}
@@ -58,7 +52,7 @@ const mapStateToProps = ({ pageStructure }: any) => ({
 )});
 
 const mapDispatchToProps = {
-  makeSelection,
+  setSelected,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Table);
