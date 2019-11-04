@@ -1,5 +1,5 @@
 import React from 'react';
-import Table from './Table';
+import ComponentWrapper from './ComponentWrapper';
 import { concat, pathOr, sort } from 'ramda';
 import { connect } from 'react-redux';
 
@@ -29,10 +29,9 @@ const Container: React.FC = ({
             pageComponentResponses={pageComponentResponses}
             pageComponentDataResponses={pageComponentDataResponses}
           /> : 
-          <Table
+          <ComponentWrapper
             key={child.id}
-            pageComponent={child}
-            pageComponentDataResponses={pageComponentDataResponses}
+            componentType={child.componentType}
           />
       })}
     </div>
