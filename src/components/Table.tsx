@@ -7,7 +7,7 @@ const Table: React.FC = ({ id, pageComponent, pageComponentData, outcomeResponse
     setSelected(
       id,
       objectData.externalId,
-      !objectData.isSelected,
+      true,
       outcomeId,
     )
   }

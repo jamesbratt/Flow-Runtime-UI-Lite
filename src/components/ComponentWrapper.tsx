@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setSelected } from '../actions';
+import { setSelected, setContentValue } from '../actions';
 
 const ComponentWrapper: React.FC = ({ componentType, componentRegistry, ...props }: any) => {
   const Component = componentRegistry[componentType];
@@ -22,6 +22,7 @@ const mapStateToProps = ({ pageStructure, componentRegistry }: any, ownProps: an
 
 const mapDispatchToProps = {
   setSelected,
+  setContentValue,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ComponentWrapper);

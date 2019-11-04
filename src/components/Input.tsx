@@ -1,14 +1,22 @@
 import React from 'react';
 
-const Input: React.FC = ({ pageComponent, pageComponentData }: any) => {
+const INPUT_TYPE: any = {
+  ContentString: 'text',
+  ContentNumber: 'number',
+}
+
+const Input: React.FC = ({ pageComponent, pageComponentData, setContentValue }: any) => {
   
   const { contentValue } = pageComponentData;
-  const { label } = pageComponent;
+  const { id, label, contentType } = pageComponent;
   
   return (
     <>
       <label>{label}</label>
-      <input type="text" defaultValue={contentValue} />
+      <input
+        type={INPUT_TYPE[contentType]}
+        onChange={(e) => setContentValue(id, e.target.value)} defaultValue={contentValue}
+      />
     </>
   );
 }

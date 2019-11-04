@@ -5,7 +5,24 @@ const pageStructureReducer = (
   action: any
 ): any => {
   switch (action.type) {
-    case 'SET_SELECTED':
+    case 'SET_CONTENT_VALUE': {
+      const { pageComponentId, contentValue } = action.payload;
+      return assocPath(
+        ['mapElementInvokeResponses', 'pageResponse', 'pageComponentDataResponses'],
+        page.mapElementInvokeResponses.pageResponse.pageComponentDataResponses.map((component: any) => {
+          if (component.pageComponentId === pageComponentId) {
+            return {
+              ...component,
+              contentValue,
+            } 
+          } 
+          return component
+        }),
+        page,
+      )
+    }
+
+    case 'SET_SELECTED': {
       const { pageComponentId, externalId, isSelected } = action.payload;
       return assocPath(
         ['mapElementInvokeResponses', 'pageResponse', 'pageComponentDataResponses'],
@@ -31,6 +48,7 @@ const pageStructureReducer = (
         }),
         page,
       )
+    }
 
     case 'SET_FLOW': {
       const mapElementInvokeResponse = action.payload.mapElementInvokeResponses.find(

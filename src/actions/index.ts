@@ -9,10 +9,17 @@ export const setFlow = (invokeResponse: any) => {
   }
 }
 
-export const setSelected = (pageComponentId: any, externalId: string, isSelected: boolean, outcomeId: string) => {
+export const setSelected = (pageComponentId: string, externalId: string, isSelected: boolean, outcomeId: string) => {
   return {
     type: 'SET_SELECTED',
     payload: { pageComponentId, externalId, isSelected, outcomeId }
+  }
+}
+
+export const setContentValue = (pageComponentId: string, contentValue: string | number) => {
+  return {
+    type: 'SET_CONTENT_VALUE',
+    payload: { pageComponentId, contentValue }
   }
 }
 
