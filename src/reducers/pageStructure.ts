@@ -20,7 +20,10 @@ const pageStructureReducer = (
                     isSelected: isSelected,
                   }
                 }
-                return od
+                return  {
+                  ...od,
+                  isSelected: false,
+                }
               })
             } 
           } 
@@ -28,9 +31,6 @@ const pageStructureReducer = (
         }),
         page,
       )
-
-    case 'SET_CONTENT_VALUE':
-      return action.payload
 
     case 'SET_FLOW': {
       const mapElementInvokeResponse = action.payload.mapElementInvokeResponses.find(

@@ -16,6 +16,13 @@ export const setSelected = (pageComponentId: any, externalId: string, isSelected
   }
 }
 
+export const clickOutcome = (outcomeId: string) => {
+  return {
+    type: 'SET_OUTCOME',
+    payload: { outcomeId }
+  }
+}
+
 export const initializeFlow = (id: string, versionId: string, manywhotenant: string) => {
   return async (dispatch: any) => {
 

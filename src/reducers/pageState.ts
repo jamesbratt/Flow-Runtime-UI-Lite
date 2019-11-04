@@ -4,6 +4,7 @@ const pageStateReducer = (
 ): any => {
   switch (action.type) {
     case 'SET_SELECTED':
+    case 'SET_OUTCOME':
       return {
         ...state,
         pageIsMoving: action.payload.outcomeId

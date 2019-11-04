@@ -1,18 +1,17 @@
 import React from 'react';
-import { setSelected } from '../actions';
-import { connect } from 'react-redux';
 
-const Input: React.FC = ({ pageStructure }: any) => {
+const Input: React.FC = ({ pageComponent, pageComponentData }: any) => {
+  
+  const { contentValue } = pageComponentData;
+  const { label } = pageComponent;
+  
   return (
-    <input type="text" value="" />
+    <>
+      <label>{label}</label>
+      <input type="text" defaultValue={contentValue} />
+    </>
   );
 }
 
-const mapStateToProps = ({ pageStructure }: any) => ({ pageStructure });
-
-const mapDispatchToProps = {
-  setSelected,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Input);
+export default Input;
 

@@ -2,14 +2,14 @@ import React from 'react';
 import Container from './components/Container';
 import Outcome from './components/Outcome';
 import { pathOr } from 'ramda';
-import { initializeFlow, moveFlow } from './actions';
+import { initializeFlow, moveFlow, clickOutcome } from './actions';
 import { connect } from 'react-redux';
 
-const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow }: any) => {
+const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow, clickOutcome }: any) => {
 
   if (pageState.pageIsMoving) {
     moveFlow('84980601-01a4-489c-bbff-870bd6a13120');
-  } 
+  }
 
   const init = () => {
     initializeFlow(
@@ -23,7 +23,7 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow }: a
   const pageContainerDataResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageContainerDataResponses'], pageStructure);
   const pageComponentResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageComponentResponses'], pageStructure);
   const pageComponentDataResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageComponentDataResponses'], pageStructure);
-  const outcomeResponses = pathOr([], ['outcomeResponses'], pageStructure);
+  const outcomeResponses = pathOr([], ['mapElementInvokeResponses', 'outcomeResponses'], pageStructure);
 
   return (
     <div className="App">
@@ -40,13 +40,10 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow }: a
               pageComponentDataResponses={pageComponentDataResponses}
             />
           })}
-          {outcomeResponses.filter((outcome: any) => outcome.pageObjectBindingId)
-            .map((outcome: any) => {
-            <Outcome key={outcome.id} outcome={outcome} />
-          })}
+          {outcomeResponses.filter((outcome: any) => !outcome.pageObjectBindingId)
+            .map((outcome: any) => <Outcome key={outcome.id} outcome={outcome} onClick={clickOutcome} />)}
         </>
       }
-
     </div>
   );
 }
@@ -55,7 +52,8 @@ const mapStateToProps = ({ pageStructure, pageState }: any) => ({ pageStructure,
 
 const mapDispatchToProps = {
   initializeFlow,
-  moveFlow
+  moveFlow,
+  clickOutcome,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

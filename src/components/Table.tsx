@@ -3,7 +3,7 @@ import Outcome from './Outcome';
 
 const Table: React.FC = ({ id, pageComponent, pageComponentData, outcomeResponses, setSelected }: any) => {
 
-  const selectRow = (objectData: any, outcomeId: any) => {
+  const selectRow = (outcomeId: any, objectData: any) => {
     setSelected(
       id,
       objectData.externalId,
