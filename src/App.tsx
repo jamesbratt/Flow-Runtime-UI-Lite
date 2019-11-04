@@ -4,7 +4,6 @@ import Outcome from './components/Outcome';
 import { pathOr } from 'ramda';
 import { initializeFlow, moveFlow } from './actions';
 import { connect } from 'react-redux';
-import './App.css';
 
 const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow }: any) => {
 
