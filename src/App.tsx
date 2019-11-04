@@ -20,35 +20,28 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow }: a
     );
   }
 
-  const mapElementInvokeResponses = pathOr([], ['mapElementInvokeResponses'], pageStructure);
+  const pageContainerResponses = pathOr([], ['mapElementInvokeResponses', 'pageResponse', 'pageContainerResponses'], pageStructure);
+  const pageContainerDataResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageContainerDataResponses'], pageStructure);
+  const pageComponentResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageComponentResponses'], pageStructure);
+  const pageComponentDataResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageComponentDataResponses'], pageStructure);
+  const outcomeResponses = pathOr([], ['outcomeResponses'], pageStructure);
 
   return (
     <div className="App">
       <button onClick={init}>Initialize Flow</button>
-      {mapElementInvokeResponses.map((response: any) => {
-        const pageContainerResponses = pathOr([], ['pageResponse', 'pageContainerResponses'], response);
-        const pageContainerDataResponses = pathOr([], ['pageResponse', 'pageContainerDataResponses'], response);
-        const pageComponentResponses = pathOr([], ['pageResponse', 'pageComponentResponses'], response);
-        const pageComponentDataResponses = pathOr([], ['pageResponse', 'pageComponentDataResponses'], response);
-        const outcomeResponses = pathOr([], ['outcomeResponses'], response);
-        return (
-          <React.Fragment key={response.mapElementId}>
-            {pageContainerResponses.map((container: any) => {
-              return <Container
-                key={container.id}
-                container={container}
-                pageContainerDataResponses={pageContainerDataResponses}
-                pageComponentResponses={pageComponentResponses}
-                pageComponentDataResponses={pageComponentDataResponses}
-              />
-            })}
-            {outcomeResponses.filter((outcome: any) => outcome.pageObjectBindingId)
-              .map((outcome: any) => {
-              <Outcome key={outcome.id} outcome={outcome} />
-            })}
-          </React.Fragment>
-        )
-      })}
+        {pageContainerResponses.map((container: any) => {
+          return <Container
+            key={container.id}
+            container={container}
+            pageContainerDataResponses={pageContainerDataResponses}
+            pageComponentResponses={pageComponentResponses}
+            pageComponentDataResponses={pageComponentDataResponses}
+          />
+        })}
+        {outcomeResponses.filter((outcome: any) => outcome.pageObjectBindingId)
+          .map((outcome: any) => {
+          <Outcome key={outcome.id} outcome={outcome} />
+        })}
     </div>
   );
 }

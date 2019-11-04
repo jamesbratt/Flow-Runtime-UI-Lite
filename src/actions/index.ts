@@ -9,17 +9,10 @@ export const setFlow = (invokeResponse: any) => {
   }
 }
 
-export const makeSelection = (pageComponent: any, outcomeId: string) => {
-  return {
-    type: 'MAKE_SELECTION',
-    payload: { pageComponent, outcomeId }
-  }
-}
-
-export const setSelected = (pageComponentId: any, externalId: string, isSelected: boolean) => {
+export const setSelected = (pageComponentId: any, externalId: string, isSelected: boolean, outcomeId: string) => {
   return {
     type: 'SET_SELECTED',
-    payload: { pageComponentId, externalId, isSelected }
+    payload: { pageComponentId, externalId, isSelected, outcomeId }
   }
 }
 
@@ -54,15 +47,45 @@ export const initializeFlow = (id: string, versionId: string, manywhotenant: str
 export const moveFlow = (manywhotenant: string) => {
   return async (dispatch: any, getState: any) => {
     const { pageState, pageStructure } = getState();
-    const { currentMapElementId } = pageStructure;
-    const mapElementInvokeResponse = pageStructure.mapElementInvokeResponses.find(
-      (response: any) => response.mapElementId === currentMapElementId
-    );
+    const {
+      currentMapElementId,
+      stateId,
+      stateToken,
+      invokeType,
+      annotations,
+      geoLocation,
+      mode
+    } = pageStructure;
+
+    const invokeResponse: any = {
+      invokeType,
+      stateId,
+      stateToken,
+      currentMapElementId,
+      annotations,
+      geoLocation,
+      mapElementInvokeRequest: {
+        pageRequest: {
+          pageComponentInputResponses: pageStructure.mapElementInvokeResponses.pageResponse.pageComponentDataResponses.map((component: any) => {
+            return {
+              objectData: component.objectData ? component.objectData.filter((od: any) => od.isSelected) : null,
+              contentValue: component.contentValue,
+              pageComponentId: component.pageComponentId,
+            }
+          }),
+        },
+        selectedOutcomeId: pageState.pageIsMoving,
+      },
+      mode,
+      selectedMapElementId: null,
+      navigationElementId: null,
+      selectedNavigationElementId: null
+    };
 
     try {
       const moveResponse: any = await axios.post(
-        `${baseUrl}/api/run/1/state/${pageState.state.stateId}`,
-        pageState.state,
+        `${baseUrl}/api/run/1/state/${stateId}`,
+        invokeResponse,
         { headers: { manywhotenant } }
       ).catch(error => {
         throw Error(error.response.data)

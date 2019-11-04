@@ -3,13 +3,18 @@ import Outcome from './Outcome';
 import { setSelected } from '../actions';
 import { connect } from 'react-redux';
 
-const Table: React.FC = ({ pageComponent, pageComponentDataResponses, mapElementInvokeResponse, setSelected }: any) => {
+const Table: React.FC = ({ pageComponent, pageComponentDataResponses, pageStructure, setSelected }: any) => {
 
   const selectRow = (objectData: any, outcomeId: any) => {
-    setSelected(pageComponent.id, objectData.externalId, !objectData.isSelected)
+    setSelected(
+      pageComponent.id,
+      objectData.externalId,
+      !objectData.isSelected,
+      outcomeId,
+    )
   }
 
-  const outcomes = mapElementInvokeResponse.outcomeResponses.filter((outcome: any) =>
+  const outcomes = pageStructure.mapElementInvokeResponses.outcomeResponses.filter((outcome: any) =>
     outcome.pageObjectBindingId === pageComponent.id
   );
 
@@ -46,10 +51,7 @@ const Table: React.FC = ({ pageComponent, pageComponentDataResponses, mapElement
   );
 }
 
-const mapStateToProps = ({ pageStructure }: any) => ({
-  mapElementInvokeResponse: pageStructure.mapElementInvokeResponses.find((invokeResponse: any) =>
-  invokeResponse.mapElementId === pageStructure.currentMapElementId
-)});
+const mapStateToProps = ({ pageStructure }: any) => ({ pageStructure });
 
 const mapDispatchToProps = {
   setSelected,
