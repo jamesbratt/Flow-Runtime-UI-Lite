@@ -28,20 +28,26 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow }: a
 
   return (
     <div className="App">
-      <button onClick={init}>Initialize Flow</button>
-        {pageContainerResponses.map((container: any) => {
-          return <Container
-            key={container.id}
-            container={container}
-            pageContainerDataResponses={pageContainerDataResponses}
-            pageComponentResponses={pageComponentResponses}
-            pageComponentDataResponses={pageComponentDataResponses}
-          />
-        })}
-        {outcomeResponses.filter((outcome: any) => outcome.pageObjectBindingId)
-          .map((outcome: any) => {
-          <Outcome key={outcome.id} outcome={outcome} />
-        })}
+      {pageState.pageIsMoving ?
+        <p>Loading...</p> :
+        <>
+          <button onClick={init}>Initialize Flow</button>
+          {pageContainerResponses.map((container: any) => {
+            return <Container
+              key={container.id}
+              container={container}
+              pageContainerDataResponses={pageContainerDataResponses}
+              pageComponentResponses={pageComponentResponses}
+              pageComponentDataResponses={pageComponentDataResponses}
+            />
+          })}
+          {outcomeResponses.filter((outcome: any) => outcome.pageObjectBindingId)
+            .map((outcome: any) => {
+            <Outcome key={outcome.id} outcome={outcome} />
+          })}
+        </>
+      }
+
     </div>
   );
 }

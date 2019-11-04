@@ -19,7 +19,6 @@ const Container: React.FC = ({
 
   return (
     <div className="container">
-      {container.developerName}
       {children.map((child: any) => {
         return child.containerType ? 
           <Container
@@ -31,6 +30,7 @@ const Container: React.FC = ({
           /> : 
           <ComponentWrapper
             key={child.id}
+            id={child.id}
             componentType={child.componentType}
           />
       })}
