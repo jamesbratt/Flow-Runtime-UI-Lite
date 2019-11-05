@@ -3,7 +3,7 @@ const pageStateReducer = (
   action: any
 ): any => {
   switch (action.type) {
-    case 'SET_SELECTED':
+    case 'SET_SELECTED_OBJECT_DATA':
     case 'SET_OUTCOME':
       return {
         ...state,

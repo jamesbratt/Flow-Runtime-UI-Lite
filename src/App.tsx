@@ -19,11 +19,17 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow, cli
     );
   }
 
-  const pageContainerResponses = pathOr([], ['mapElementInvokeResponses', 'pageResponse', 'pageContainerResponses'], pageStructure);
-  const pageContainerDataResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageContainerDataResponses'], pageStructure);
-  const pageComponentResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageComponentResponses'], pageStructure);
-  const pageComponentDataResponses = pathOr([], ['mapElementInvokeResponses','pageResponse', 'pageComponentDataResponses'], pageStructure);
-  const outcomeResponses = pathOr([], ['mapElementInvokeResponses', 'outcomeResponses'], pageStructure);
+  const pageContainerResponses = pathOr(
+    [],
+    ['mapElementInvokeResponses', 'pageResponse', 'pageContainerResponses'],
+    pageStructure
+  );
+
+  const outcomeResponses = pathOr(
+    [],
+    ['mapElementInvokeResponses', 'outcomeResponses'],
+    pageStructure
+  );
 
   return (
     <div className="App">
@@ -32,13 +38,7 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow, cli
         <>
           <button onClick={init}>Initialize Flow</button>
           {pageContainerResponses.map((container: any) => {
-            return <Container
-              key={container.id}
-              container={container}
-              pageContainerDataResponses={pageContainerDataResponses}
-              pageComponentResponses={pageComponentResponses}
-              pageComponentDataResponses={pageComponentDataResponses}
-            />
+            return <Container key={container.id} container={container} />
           })}
           {outcomeResponses.filter((outcome: any) => !outcome.pageObjectBindingId)
             .map((outcome: any) => <Outcome key={outcome.id} outcome={outcome} onClick={clickOutcome} />)}

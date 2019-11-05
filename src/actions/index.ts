@@ -11,7 +11,7 @@ export const setFlow = (invokeResponse: any) => {
 
 export const setSelected = (pageComponentId: string, externalId: string, isSelected: boolean, outcomeId: string) => {
   return {
-    type: 'SET_SELECTED',
+    type: 'SET_SELECTED_OBJECT_DATA',
     payload: { pageComponentId, externalId, isSelected, outcomeId }
   }
 }

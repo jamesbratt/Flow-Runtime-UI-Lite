@@ -22,7 +22,7 @@ const pageStructureReducer = (
       )
     }
 
-    case 'SET_SELECTED': {
+    case 'SET_SELECTED_OBJECT_DATA': {
       const { pageComponentId, externalId, isSelected } = action.payload;
       return assocPath(
         ['mapElementInvokeResponses', 'pageResponse', 'pageComponentDataResponses'],

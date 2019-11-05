@@ -3,30 +3,20 @@ import ComponentWrapper from './ComponentWrapper';
 import { concat, pathOr, sort } from 'ramda';
 import { connect } from 'react-redux';
 
-const Container: React.FC = ({
-  container,
-  pageContainerDataResponses,
-  pageComponentResponses,
-  pageComponentDataResponses,
-  pageStructure
-}: any) => {
+const Container: React.FC = ({ container, pageComponents }: any) => {
 
-  const pageComponents = pageComponentResponses.filter((pcr: any) => pcr.pageContainerId === container.id) || [];
   const childContainers = pathOr([], ['pageContainerResponses'], container);
   const children = sort((a: any, b: any) =>  {
-      return a.sortOrder - b.sortOrder;
+      return a.order - b.order;
   }, concat(pageComponents, childContainers));
 
   return (
     <div className="container">
       {children.map((child: any) => {
         return child.containerType ? 
-          <Container
+          <ConnectedContainer
             key={child.id}
             container={child}
-            pageContainerDataResponses={pageContainerDataResponses}
-            pageComponentResponses={pageComponentResponses}
-            pageComponentDataResponses={pageComponentDataResponses}
           /> : 
           <ComponentWrapper
             key={child.id}
@@ -38,6 +28,12 @@ const Container: React.FC = ({
   );
 }
 
-const mapStateToProps = ({ pageStructure }: any) => ({ pageStructure }) 
+const mapStateToProps = ({ pageStructure }: any, ownProps: any) => ({
+  pageComponents: pageStructure.mapElementInvokeResponses.pageResponse.pageComponentResponses.filter(
+    ((component: any) => component.pageContainerId === ownProps.container.id)
+  )
+})
 
-export default connect(mapStateToProps)(Container);
+const ConnectedContainer = connect(mapStateToProps)(Container);
+
+export default ConnectedContainer;
