@@ -1,4 +1,4 @@
-import { assocPath } from 'ramda';
+import assocPath from 'ramda/src/assocPath';
 
 const pageStructureReducer = (
   page: any = {},

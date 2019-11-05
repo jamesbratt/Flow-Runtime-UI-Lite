@@ -1,7 +1,7 @@
 import React from 'react';
 import Container from './components/Container';
 import Outcome from './components/Outcome';
-import { pathOr } from 'ramda';
+import pathOr from 'ramda/src/pathOr';
 import { initializeFlow, moveFlow, clickOutcome } from './actions';
 import { connect } from 'react-redux';
 

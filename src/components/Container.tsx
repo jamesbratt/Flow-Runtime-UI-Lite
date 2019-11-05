@@ -1,6 +1,8 @@
 import React from 'react';
 import ComponentWrapper from './ComponentWrapper';
-import { concat, pathOr, sort } from 'ramda';
+import concat from 'ramda/src/concat';
+import pathOr from 'ramda/src/pathOr';
+import sort from 'ramda/src/sort';
 import { connect } from 'react-redux';
 
 const Container: React.FC = ({ container, pageComponents }: any) => {
