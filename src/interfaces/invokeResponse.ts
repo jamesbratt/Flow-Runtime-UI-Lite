@@ -1,5 +1,5 @@
 import { Guid } from 'guid-typescript';
-import { contentType, containerType, invokeType } from './common';
+import { contentType, containerType, invokeType, objectData } from './common';
 
 enum pageActionBindingType {
   SAVE = 'SAVE',
@@ -45,7 +45,7 @@ export interface pageComponentDataResponses {
   isRequired: boolean,
   isValid: boolean,
   isVisible: boolean,
-  objectData?: [any],
+  objectData?: [objectData],
   objectDataRequest?: any,
   pageComponentId: Guid,
   tags?: [any],
@@ -120,7 +120,7 @@ export interface InvokeResponse {
   currentStreamId?: Guid,
   invokeType: invokeType,
   joinFlowUri: string,
-  mapElementInvokeResponses: [mapElementInvokeResponses],
+  mapElementInvokeResponses: [mapElementInvokeResponses] | mapElementInvokeResponses,
   navigationElementReferences: [any],
   notAuthorizedMessage?: string,
   outputs?: null,

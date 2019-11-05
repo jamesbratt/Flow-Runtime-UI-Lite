@@ -1,10 +1,10 @@
 import { Guid } from 'guid-typescript';
-import { invokeType } from './common';
+import { invokeType, objectData } from './common';
 
 export interface pageComponentInputResponses {
   pageComponentId: Guid,
   contentValue?: string,
-  objectData?: [any],
+  objectData?: [objectData],
 }
 
 export interface pageRequest {
