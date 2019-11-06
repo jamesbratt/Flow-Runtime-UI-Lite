@@ -60,7 +60,7 @@ export const initializeFlow = (id: string, versionId: string, manywhotenant: str
 
 export const moveFlow = (manywhotenant: string) => {
   return async (dispatch: any, getState: any) => {
-    const { pageState, pageStructure } = getState();
+    const { pageState } = getState();
     const {
       currentMapElementId,
       stateId,
@@ -69,7 +69,7 @@ export const moveFlow = (manywhotenant: string) => {
       annotations,
       geoLocation,
       mode
-    } = pageStructure;
+    } = pageState.invokeResponse;
 
     const invokeResponse: any = {
       invokeType,
@@ -80,7 +80,7 @@ export const moveFlow = (manywhotenant: string) => {
       geoLocation,
       mapElementInvokeRequest: {
         pageRequest: {
-          pageComponentInputResponses: pageStructure.mapElementInvokeResponses.pageResponse.pageComponentDataResponses.map((component: any) => {
+          pageComponentInputResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentDataResponses.map((component: any) => {
             return {
               objectData: component.objectData ? component.objectData.filter((od: any) => od.isSelected) : null,
               contentValue: component.contentValue,
@@ -88,7 +88,7 @@ export const moveFlow = (manywhotenant: string) => {
             }
           }),
         },
-        selectedOutcomeId: pageState.pageIsMoving,
+        selectedOutcomeId: pageState.isMoving,
       },
       mode,
       selectedMapElementId: null,

@@ -5,9 +5,9 @@ import pathOr from 'ramda/src/pathOr';
 import { initializeFlow, moveFlow, clickOutcome } from './actions';
 import { connect } from 'react-redux';
 
-const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow, clickOutcome }: any) => {
+const App: React.FC = ({ pageState, initializeFlow, moveFlow, clickOutcome }: any) => {
 
-  if (pageState.pageIsMoving) {
+  if (pageState.isMoving) {
     moveFlow('84980601-01a4-489c-bbff-870bd6a13120');
   }
 
@@ -19,21 +19,21 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow, cli
     );
   }
 
-  const pageContainerResponses = pathOr(
+  const pageContainerResponses: any = pathOr(
     [],
-    ['mapElementInvokeResponses', 'pageResponse', 'pageContainerResponses'],
-    pageStructure
+    ['selectedMapElementInvokeResponse', 'pageResponse', 'pageContainerResponses'],
+    pageState.invokeResponse
   );
 
-  const outcomeResponses = pathOr(
+  const outcomeResponses: any = pathOr(
     [],
-    ['mapElementInvokeResponses', 'outcomeResponses'],
-    pageStructure
+    ['selectedMapElementInvokeResponse', 'outcomeResponses'],
+    pageState.invokeResponse
   );
 
   return (
     <div className="App">
-      {pageState.pageIsMoving ?
+      {pageState.isMoving ?
         <p>Loading...</p> :
         <>
           <button onClick={init}>Initialize Flow</button>
@@ -48,7 +48,7 @@ const App: React.FC = ({ pageStructure, pageState, initializeFlow, moveFlow, cli
   );
 }
 
-const mapStateToProps = ({ pageStructure, pageState }: any) => ({ pageStructure, pageState }) 
+const mapStateToProps = ({ pageState }: any) => ({ pageState }) 
 
 const mapDispatchToProps = {
   initializeFlow,

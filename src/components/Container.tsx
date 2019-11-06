@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 
 const Container: React.FC = ({ container, pageComponents }: any) => {
 
-  const childContainers = pathOr([], ['pageContainerResponses'], container);
+  const childContainers: any = pathOr([], ['pageContainerResponses'], container);
   const children = sort((a: any, b: any) =>  {
       return a.order - b.order;
   }, concat(pageComponents, childContainers));
@@ -30,8 +30,8 @@ const Container: React.FC = ({ container, pageComponents }: any) => {
   );
 }
 
-const mapStateToProps = ({ pageStructure }: any, ownProps: any) => ({
-  pageComponents: pageStructure.mapElementInvokeResponses.pageResponse.pageComponentResponses.filter(
+const mapStateToProps = ({ pageState }: any, ownProps: any) => ({
+  pageComponents: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentResponses.filter(
     ((component: any) => component.pageContainerId === ownProps.container.id)
   )
 })

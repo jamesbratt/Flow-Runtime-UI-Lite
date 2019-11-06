@@ -9,14 +9,14 @@ const ComponentWrapper: React.FC = ({ componentType, componentRegistry, ...props
   );
 }
 
-const mapStateToProps = ({ pageStructure, componentRegistry }: any, ownProps: any) => ({
-  pageComponent: pageStructure.mapElementInvokeResponses.pageResponse.pageComponentResponses.find(
+const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: any) => ({
+  pageComponent: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentResponses.find(
     ((component: any) => component.id === ownProps.id)
   ),
-  pageComponentData: pageStructure.mapElementInvokeResponses.pageResponse.pageComponentDataResponses.find(
+  pageComponentData: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentDataResponses.find(
     ((component: any) => component.pageComponentId === ownProps.id)
   ),
-  outcomeResponses: pageStructure.mapElementInvokeResponses.outcomeResponses,
+  outcomeResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.outcomeResponses,
   componentRegistry,
 });
 
