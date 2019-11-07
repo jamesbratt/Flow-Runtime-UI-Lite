@@ -5,6 +5,7 @@ export const SET_FLOW = 'SET_FLOW'
 export const SET_SELECTED_OBJECT_DATA = 'SET_SELECTED_OBJECT_DATA'
 export const SET_CONTENT_VALUE = 'SET_CONTENT_VALUE'
 export const SET_OUTCOME = 'SET_OUTCOME'
+export const SET_SERVICE_DATA = 'SET_SERVICE_DATA'
 
 interface SetFlowAction {
   type: typeof SET_FLOW
@@ -36,4 +37,12 @@ interface SetContentValueAction {
   }
 }
 
-export type pageStructureActionTypes = SetFlowAction | SetSelectedAction | SetContentValueAction | SetOutcomeAction
+interface SetServiceDataAction {
+  type: typeof SET_SERVICE_DATA
+  payload: {
+    objectDataResponse: any,
+    pageComponentId: Guid,
+  }
+}
+
+export type pageStructureActionTypes = SetServiceDataAction | SetFlowAction | SetSelectedAction | SetContentValueAction | SetOutcomeAction

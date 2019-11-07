@@ -12,6 +12,11 @@ const Table: React.FC = ({ id, pageComponent, pageComponentData, outcomeResponse
     )
   }
 
+  const hasColumn = (typeElementPropertyId: any) => {
+    const match = pageComponent.columns.find((column: any) => column.typeElementPropertyId === typeElementPropertyId)
+    return match ? true : false;
+  }
+
   const outcomes = outcomeResponses.filter((outcome: any) =>
     outcome.pageObjectBindingId === id
   );
@@ -25,7 +30,8 @@ const Table: React.FC = ({ id, pageComponent, pageComponentData, outcomeResponse
       {outcomes ? outcomes.map((outcome: any) => 
         <td key={outcome.id}><Outcome key={outcome.id} data={row} outcome={outcome} onClick={selectRow} /></td>)
       : null}
-      {row.properties.map((cell: any) => 
+      {row.properties.filter((property: any) => hasColumn(property.typeElementPropertyId))
+        .map((cell: any) => 
         <td key={cell.typeElementPropertyId}>{cell.contentValue}</td>
       )}
     </tr>

@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { InvokeResponse } from '../interfaces/invokeResponse';
+import { InvokeRequest } from '../interfaces/invokeRequest';
 
 const baseUrl = 'https://flow.manywho.com';
 
@@ -67,17 +69,15 @@ export const moveFlow = (manywhotenant: string) => {
       stateToken,
       invokeType,
       annotations,
-      geoLocation,
-      mode
-    } = pageState.invokeResponse;
+    }: InvokeResponse = pageState.invokeResponse;
 
-    const invokeResponse: any = {
+    const invokeResponse = {
       invokeType,
       stateId,
       stateToken,
       currentMapElementId,
       annotations,
-      geoLocation,
+      geoLocation: null,
       mapElementInvokeRequest: {
         pageRequest: {
           pageComponentInputResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentDataResponses.map((component: any) => {
@@ -90,7 +90,7 @@ export const moveFlow = (manywhotenant: string) => {
         },
         selectedOutcomeId: pageState.isMoving,
       },
-      mode,
+      mode: null,
       selectedMapElementId: null,
       navigationElementId: null,
       selectedNavigationElementId: null
@@ -109,6 +109,28 @@ export const moveFlow = (manywhotenant: string) => {
         setFlow(moveResponse.data)
       )
 
+    } catch(error) {
+      console.log(error);
+    }
+  }
+}
+
+export const fetchServiceData = (manywhotenant: string, objectDataRequest: any, pageComponentId: string) => {
+  return async (dispatch: any) => {
+    try {
+      const objectDataResponse: any = await axios.post(
+        `${baseUrl}/api/service/1/data`,
+        objectDataRequest,
+        { headers: { manywhotenant } }
+      ).catch(error => {
+        throw Error(error.response.data)
+      });
+  
+      dispatch({
+        type: 'SET_SERVICE_DATA',
+        payload: { objectDataResponse: objectDataResponse.data, pageComponentId }        
+      })
+  
     } catch(error) {
       console.log(error);
     }

@@ -1,12 +1,25 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setSelected, setContentValue } from '../actions';
+import { fetchServiceData, setSelected, setContentValue } from '../actions';
 
-const ComponentWrapper: React.FC = ({ componentType, componentRegistry, ...props }: any) => {
-  const Component = componentRegistry[componentType];
-  return (
-    <Component {...props} />
-  );
+class ComponentWrapper extends React.Component<any, any> {
+  componentDidMount() {
+    const { objectDataRequest } = this.props.pageComponentData;
+    if (objectDataRequest) {
+      this.props.fetchServiceData(
+        '84980601-01a4-489c-bbff-870bd6a13120',
+        objectDataRequest,
+        this.props.id,
+      );
+    }
+  }
+
+  render() {
+    const Component = this.props.componentRegistry[this.props.componentType];
+    return (
+      <Component {...this.props} />
+    );
+  }
 }
 
 const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: any) => ({
@@ -23,6 +36,7 @@ const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: any) =
 const mapDispatchToProps = {
   setSelected,
   setContentValue,
+  fetchServiceData,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(ComponentWrapper);

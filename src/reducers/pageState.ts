@@ -1,12 +1,15 @@
 import assocPath from 'ramda/src/assocPath';
+import mergeDeepLeft from 'ramda/src/mergeDeepLeft';
+import { InvokeResponse } from '../interfaces/invokeResponse';
+
 import {
   pageStructureActionTypes,
   SET_FLOW,
+  SET_SERVICE_DATA,
   SET_SELECTED_OBJECT_DATA,
   SET_CONTENT_VALUE,
   SET_OUTCOME,
 } from '../actions/types';
-import { InvokeResponse } from '../interfaces/invokeResponse';
 
 interface pageState {
   invokeResponse: InvokeResponse
@@ -34,6 +37,26 @@ const pageStateReducer = (
         ...page,
         isMoving: action.payload.outcomeId
     }
+
+    case SET_SERVICE_DATA:
+      const { pageComponentDataResponses } = page.invokeResponse.selectedMapElementInvokeResponse.pageResponse;
+      if (pageComponentDataResponses) {
+        const { pageComponentId, objectDataResponse } = action.payload;
+        return {
+          ...page,
+          invokeResponse: assocPath(
+            ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
+            pageComponentDataResponses.map((component: any) => {
+              if (component.pageComponentId === pageComponentId) {
+                return mergeDeepLeft(objectDataResponse, component);
+              } 
+              return component
+            }),
+            page.invokeResponse,
+          )
+        }
+      }
+      break;
 
     case SET_CONTENT_VALUE: {
       const { pageComponentDataResponses } = page.invokeResponse.selectedMapElementInvokeResponse.pageResponse;
@@ -91,7 +114,6 @@ const pageStateReducer = (
             page.invokeResponse,
           )
         }
-
       }
       break;
     }
