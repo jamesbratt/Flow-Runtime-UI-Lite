@@ -25,6 +25,7 @@ const initialState = {
     },
   },
   isMoving: null,
+  pendingServiceData: true,
 }
 
 const pageStateReducer = (
@@ -44,6 +45,7 @@ const pageStateReducer = (
         const { pageComponentId, objectDataResponse } = action.payload;
         return {
           ...page,
+          pendingServiceData: false,
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: any) => {
@@ -126,6 +128,7 @@ const pageStateReducer = (
         return {
           ...page,
           isMoving: null,
+          pendingServiceData: true,
           invokeResponse: assocPath(['selectedMapElementInvokeResponse'], mapElementInvokeResponse, action.payload),
         }
       }

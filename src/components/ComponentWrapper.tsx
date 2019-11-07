@@ -16,8 +16,14 @@ class ComponentWrapper extends React.Component<any, any> {
 
   render() {
     const Component = this.props.componentRegistry[this.props.componentType];
+    const { objectDataRequest } = this.props.pageComponentData;
     return (
-      <Component {...this.props} />
+      <>
+        {this.props.pendingServiceData && objectDataRequest ?
+          <p>Fetching data from a service...</p> :
+          <Component {...this.props} />
+        }
+      </>
     );
   }
 }
@@ -30,6 +36,7 @@ const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: any) =
     ((component: any) => component.pageComponentId === ownProps.id)
   ),
   outcomeResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.outcomeResponses,
+  pendingServiceData: pageState.pendingServiceData,
   componentRegistry,
 });
 
