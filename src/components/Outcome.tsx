@@ -5,7 +5,7 @@ import { outcomeResponses } from '../interfaces/invokeResponse';
 interface IOutcome {
   outcome: outcomeResponses,
   onClick: Function,
-  data: objectData,
+  data?: objectData,
 }
 
 const Outcome: React.FC<IOutcome> = ({ outcome, onClick, data }) => {

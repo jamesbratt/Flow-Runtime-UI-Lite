@@ -5,7 +5,18 @@ import pathOr from 'ramda/src/pathOr';
 import { initializeFlow, moveFlow, clickOutcome } from './actions';
 import { connect } from 'react-redux';
 
-const App: React.FC = ({ pageState, initializeFlow, moveFlow, clickOutcome }: any) => {
+import {
+  outcomeResponses,
+} from './interfaces/invokeResponse';
+
+interface IApp {
+  pageState: any,
+  initializeFlow: Function,
+  moveFlow: Function,
+  clickOutcome: Function,
+}
+
+const App: React.FC<IApp> = ({ pageState, initializeFlow, moveFlow, clickOutcome }) => {
 
   if (pageState.isMoving) {
     moveFlow('84980601-01a4-489c-bbff-870bd6a13120');
@@ -19,13 +30,13 @@ const App: React.FC = ({ pageState, initializeFlow, moveFlow, clickOutcome }: an
     );
   }
 
-  const pageContainerResponses: any = pathOr(
+  const containers: any = pathOr(
     [],
     ['selectedMapElementInvokeResponse', 'pageResponse', 'pageContainerResponses'],
     pageState.invokeResponse
   );
 
-  const outcomeResponses: any = pathOr(
+  const outcomes: any = pathOr(
     [],
     ['selectedMapElementInvokeResponse', 'outcomeResponses'],
     pageState.invokeResponse
@@ -37,11 +48,11 @@ const App: React.FC = ({ pageState, initializeFlow, moveFlow, clickOutcome }: an
         <p>Loading...</p> :
         <>
           <button onClick={init}>Initialize Flow</button>
-          {pageContainerResponses.map((container: any) => {
+          {containers.map((container: any) => {
             return <Container key={container.id} container={container} />
           })}
-          {outcomeResponses.filter((outcome: any) => !outcome.pageObjectBindingId)
-            .map((outcome: any) => <Outcome key={outcome.id} outcome={outcome} onClick={clickOutcome} />)}
+          {outcomes.filter((outcome: any) => !outcome.pageObjectBindingId)
+            .map((outcome: outcomeResponses) => <Outcome key={outcome.id} outcome={outcome} onClick={clickOutcome} />)}
         </>
       }
     </div>
