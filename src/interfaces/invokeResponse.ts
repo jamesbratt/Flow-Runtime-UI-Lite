@@ -139,7 +139,7 @@ export interface pageResponse {
   attributes?: [any]
   label?: string
   order?: number
-  pageComponentDataResponses?: [pageComponentDataResponses] | null
+  pageComponentDataResponses: [pageComponentDataResponses]
   pageComponentResponses?: [pageComponentResponses]
   pageContainerDataResponses?: [pageContainerDataResponses]
   pageContainerResponses?: [pageContainerResponses]

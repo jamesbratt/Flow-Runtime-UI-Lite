@@ -2,12 +2,12 @@ import { invokeType, objectData } from './common';
 
 export interface pageComponentInputResponses {
   pageComponentId: string,
-  contentValue?: string,
-  objectData?: [objectData],
+  contentValue: string,
+  objectData: [objectData],
 }
 
 export interface pageRequest {
-  pageComponentInputResponses: pageComponentInputResponses
+  pageComponentInputResponses: [pageComponentInputResponses]
 }
 
 export interface mapElementInvokeRequest {
