@@ -1,6 +1,7 @@
 import assocPath from 'ramda/src/assocPath';
 import mergeDeepLeft from 'ramda/src/mergeDeepLeft';
 import { InvokeResponse } from '../interfaces/invokeResponse';
+import { Guid } from 'guid-typescript';
 
 import {
   pageStructureActionTypes,
@@ -14,7 +15,8 @@ import {
 
 interface pageState {
   invokeResponse: InvokeResponse
-  isMoving: string | null
+  isMoving: Guid | null,
+  pendingServiceData: boolean,
 }
 
 const initialState = {
@@ -47,6 +49,7 @@ const pageStateReducer = (
 
         return {
           ...page,
+          pendingServiceData: true,
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: any) => {

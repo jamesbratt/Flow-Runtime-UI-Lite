@@ -1,4 +1,3 @@
-import { Guid } from 'guid-typescript';
 import { contentType, containerType, invokeType, objectData } from './common';
 
 enum pageActionBindingType {
@@ -22,17 +21,37 @@ export interface culture {
   variant?: string
 }
 
+export interface column {
+  componentType: string,
+  contentType: contentType,
+  developerName: string,
+  hasEvents: boolean,
+  height: number,
+  helpInfo: string,
+  hintValue: string,
+  id: string,
+  isMultiSelect: boolean,
+  isSearchable: boolean,
+  label: string,
+  maxSize: number,
+  order: number,
+  pageContainerDeveloperName: string,
+  pageContainerId: string,
+  size: number,
+  width: number,
+}
+
 export interface outcomeResponses {
   attributes?: [any]
   developerName: string
-  id: Guid
+  id: string
   isBulkAction: boolean,
   isOut: boolean
   label: string
   order: number
   pageActionBindingType: pageActionBindingType
   pageActionType: string
-  pageObjectBindingId?: Guid
+  pageObjectBindingId?: string
 }
 
 export interface pageComponentDataResponses {
@@ -45,16 +64,16 @@ export interface pageComponentDataResponses {
   isRequired: boolean
   isValid: boolean
   isVisible: boolean
-  objectData?: [objectData]
+  objectData: [objectData]
   objectDataRequest?: any
-  pageComponentId: Guid
+  pageComponentId: string
   tags?: [any]
   validationMessage?: string
 }
 
 export interface pageComponentResponses {
   attributes?: [any]
-  columns?: [any]
+  columns: [column]
   componentType: string
   contentType: contentType
   developerName: string
@@ -62,14 +81,14 @@ export interface pageComponentResponses {
   height: number
   helpInfo: string
   hintValue: string
-  id: Guid
+  id: string
   isMultiSelect: boolean
   isSearchable: boolean
   label: string
   maxSize: number
   order: number
   pageContainerDeveloperName: string,
-  pageContainerId: Guid
+  pageContainerId: string
   size: number
   width: number
 }
@@ -78,7 +97,7 @@ export interface pageContainerDataResponses {
   isEditable: boolean
   isEnabled: boolean
   isVisible: boolean
-  pageContainerId: Guid
+  pageContainerId: string
   tags?: [any]
 }
 
@@ -86,7 +105,7 @@ export interface pageContainerResponses {
   attributes?: [any]
   containerType: containerType
   developerName: string
-  id: Guid
+  id: string
   label: string
   order: number
   pageContainerResponses: [pageContainerResponses]
@@ -105,7 +124,7 @@ export interface pageResponse {
 
 export interface mapElementInvokeResponses {
   developerName?: string
-  mapElementId?: Guid
+  mapElementId?: string
   outcomeResponses?: [outcomeResponses]
   pageResponse: pageResponse
   rootFaults?: [any]
@@ -116,8 +135,8 @@ export interface InvokeResponse {
   annotations?: string
   authorizationContext?: authorizationContext
   culture?: culture
-  currentMapElementId?: Guid
-  currentStreamId?: Guid
+  currentMapElementId?: string
+  currentStreamId?: string
   invokeType?: invokeType
   joinFlowUri?: string
   mapElementInvokeResponses?: [mapElementInvokeResponses]
@@ -125,12 +144,12 @@ export interface InvokeResponse {
   navigationElementReferences?: [any]
   notAuthorizedMessage?: string
   outputs?: null
-  parentStateId?: Guid
+  parentStateId?: string
   preCommitStateValues?: any
   runFlowUri?: string
-  stateId?: Guid
+  stateId?: string
   stateLog?: any
-  stateToken?: Guid
+  stateToken?: string
   stateValues?: any
   statusCode?: number
   voteResponse?: any

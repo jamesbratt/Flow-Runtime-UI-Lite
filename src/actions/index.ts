@@ -162,7 +162,6 @@ export const syncFlow = (manywhotenant: string) => {
       const syncedData = syncResponse.data.mapElementInvokeResponses.find(
         (response: any) => response.mapElementId === syncResponse.data.currentMapElementId
       ).pageResponse.pageComponentDataResponses
-      .filter((response: any) => !response.objectDataRequest)
       .reduce((obj: any, data: any) => Object.assign(obj, { [data.pageComponentId]: data }), {})
 
       dispatch({

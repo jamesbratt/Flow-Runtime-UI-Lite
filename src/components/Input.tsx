@@ -1,11 +1,24 @@
 import React from 'react';
 
+import {
+  pageComponentDataResponses,
+  pageComponentResponses,
+} from '../interfaces/invokeResponse';
+
+interface IInput {
+  id: string,
+  pageComponent: pageComponentResponses,
+  pageComponentData: pageComponentDataResponses,
+  setContentValue: Function,
+  syncFlow: Function,
+}
+
 const INPUT_TYPE: any = {
   ContentString: 'text',
   ContentNumber: 'number',
 }
 
-const Input: React.FC = ({ pageComponent, pageComponentData, setContentValue, syncFlow }: any) => {
+const Input: React.FC<IInput> = ({ pageComponent, pageComponentData, setContentValue, syncFlow }) => {
   
   const { contentValue, isVisible } = pageComponentData;
   const { id, label, contentType, hasEvents } = pageComponent;

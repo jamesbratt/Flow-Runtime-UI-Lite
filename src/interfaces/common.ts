@@ -1,5 +1,3 @@
-import { Guid } from 'guid-typescript';
-
 export enum invokeType {
   FORWARD = 'FORWARD',
 }
@@ -19,17 +17,17 @@ export interface properties {
   contentValue?: string,
   developerName: string,
   objectData?: [objectData],
-  typeElementId?: Guid,
-  typeElementPropertyId?: Guid
+  typeElementId?: string,
+  typeElementPropertyId?: string
 }
 
 export interface objectData {
   developerName: string,
   externalId: string,
-  internalId: Guid,
+  internalId: string,
   isSelected: boolean,
   order: number,
-  properties?: [properties],
-  typeElementBindingDeveloperName?: Guid,
-  typeElementId: Guid,
+  properties: [properties],
+  typeElementBindingDeveloperName?: string,
+  typeElementId: string,
 }

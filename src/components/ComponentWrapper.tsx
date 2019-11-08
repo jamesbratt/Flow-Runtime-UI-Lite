@@ -2,10 +2,40 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchServiceData, setSelected, setContentValue, syncFlow } from '../actions';
 
-class ComponentWrapper extends React.Component<any, any> {
+import {
+  outcomeResponses,
+  pageComponentDataResponses,
+  pageComponentResponses,
+} from '../interfaces/invokeResponse';
+
+interface componentWrapperProps {
+  id: string,
+  pageComponent: pageComponentResponses,
+  pageComponentData: pageComponentDataResponses,
+  outcomeResponses: [outcomeResponses],
+  componentRegistry: any,
+  fetchServiceData: Function,
+  componentType: string,
+  pendingServiceData: boolean,
+}
+
+class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
+
   componentDidMount() {
     const { objectDataRequest } = this.props.pageComponentData;
     if (objectDataRequest) {
+      this.props.fetchServiceData(
+        '84980601-01a4-489c-bbff-870bd6a13120',
+        objectDataRequest,
+        this.props.id,
+      );
+    }
+  }
+
+  componentDidUpdate(prevProps: componentWrapperProps) {
+    const { objectDataRequest } = this.props.pageComponentData;
+    const { objectDataRequest: previousObjectDataRequest } = prevProps.pageComponentData;
+    if (objectDataRequest && (previousObjectDataRequest !== objectDataRequest)) {
       this.props.fetchServiceData(
         '84980601-01a4-489c-bbff-870bd6a13120',
         objectDataRequest,
@@ -28,12 +58,12 @@ class ComponentWrapper extends React.Component<any, any> {
   }
 }
 
-const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: any) => ({
+const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: componentWrapperProps) => ({
   pageComponent: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentResponses.find(
-    ((component: any) => component.id === ownProps.id)
+    ((component: pageComponentResponses) => component.id === ownProps.id)
   ),
   pageComponentData: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentDataResponses.find(
-    ((component: any) => component.pageComponentId === ownProps.id)
+    ((component: pageComponentDataResponses) => component.pageComponentId === ownProps.id)
   ),
   outcomeResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.outcomeResponses,
   pendingServiceData: pageState.pendingServiceData,

@@ -5,7 +5,17 @@ import pathOr from 'ramda/src/pathOr';
 import sort from 'ramda/src/sort';
 import { connect } from 'react-redux';
 
-const Container: React.FC = ({ container, pageComponents }: any) => {
+import {
+  pageContainerResponses,
+  pageComponentResponses,
+} from '../interfaces/invokeResponse';
+
+interface IContainer {
+  container: pageContainerResponses,
+  pageComponents: [pageComponentResponses],
+}
+
+const Container: React.FC<IContainer> = ({ container, pageComponents }) => {
 
   const childContainers: any = pathOr([], ['pageContainerResponses'], container);
   const children = sort((a: any, b: any) =>  {
@@ -21,7 +31,6 @@ const Container: React.FC = ({ container, pageComponents }: any) => {
             container={child}
           /> : 
           <ComponentWrapper
-            key={child.id}
             id={child.id}
             componentType={child.componentType}
           />
@@ -32,7 +41,7 @@ const Container: React.FC = ({ container, pageComponents }: any) => {
 
 const mapStateToProps = ({ pageState }: any, ownProps: any) => ({
   pageComponents: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentResponses.filter(
-    ((component: any) => component.pageContainerId === ownProps.container.id)
+    ((component: pageComponentResponses) => component.pageContainerId === ownProps.container.id)
   )
 })
 
