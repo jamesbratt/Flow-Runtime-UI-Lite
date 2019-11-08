@@ -19,7 +19,7 @@ export interface properties {
   developerName: string,
   objectData?: [objectData],
   typeElementId?: string,
-  typeElementPropertyId?: string
+  typeElementPropertyId: string
 }
 
 export interface objectData {

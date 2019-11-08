@@ -43,6 +43,7 @@ export interface column {
   order: number,
   pageContainerDeveloperName: string,
   pageContainerId: string,
+  typeElementPropertyId: string,
   size: number,
   width: number,
 }

@@ -1,6 +1,5 @@
 import React from 'react';
 import Outcome from './Outcome';
-import { Guid } from 'guid-typescript';
 import { objectData, properties } from '../interfaces/common';
 
 import {
@@ -20,7 +19,7 @@ interface ITable {
 
 const Table: React.FC<ITable> = ({ id, pageComponent, pageComponentData, outcomeResponses, setSelected }) => {
 
-  const selectRow = (outcomeId: Guid, objectData: objectData) => {
+  const selectRow = (outcomeId: string, objectData: objectData) => {
     setSelected(
       id,
       objectData.externalId,
@@ -29,8 +28,8 @@ const Table: React.FC<ITable> = ({ id, pageComponent, pageComponentData, outcome
     )
   }
 
-  const hasColumn = (typeElementPropertyId: any) => {
-    const match = pageComponent.columns.find((column: any) => column.typeElementPropertyId === typeElementPropertyId)
+  const hasColumn = (typeElementPropertyId: string) => {
+    const match = pageComponent.columns.find((column: column) => column.typeElementPropertyId === typeElementPropertyId)
     return match ? true : false;
   }
 
