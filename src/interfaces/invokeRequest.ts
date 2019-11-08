@@ -1,8 +1,7 @@
-import { Guid } from 'guid-typescript';
 import { invokeType, objectData } from './common';
 
 export interface pageComponentInputResponses {
-  pageComponentId: Guid,
+  pageComponentId: string,
   contentValue?: string,
   objectData?: [objectData],
 }
@@ -13,19 +12,19 @@ export interface pageRequest {
 
 export interface mapElementInvokeRequest {
   pageRequest: pageRequest,
-  selectedOutcomeId: Guid,
+  selectedOutcomeId: string | null,
 }
 
 export interface InvokeRequest {
-  invokeType: invokeType,
-  stateId: Guid,
-  stateToken: Guid,
-  currentMapElementId: Guid,
-  annotations?: string,
-  geoLocation?: string,
+  invokeType: invokeType.FORWARD | invokeType.SYNC,
+  stateId: string,
+  stateToken: string,
+  currentMapElementId: string | null,
+  annotations: string | null,
+  geoLocation: string | null,
   mapElementInvokeRequest: mapElementInvokeRequest,
-  mode: string,
-  selectedMapElementId?: Guid,
-  navigationElementId?: Guid,
-  selectedNavigationElementId?: Guid,
+  mode: string | null,
+  selectedMapElementId: string | null,
+  navigationElementId: string | null,
+  selectedNavigationElementId: string | null,
 }

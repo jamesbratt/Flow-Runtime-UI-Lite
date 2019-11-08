@@ -1,5 +1,6 @@
 export enum invokeType {
   FORWARD = 'FORWARD',
+  SYNC = 'SYNC',
 }
 
 export enum contentType {

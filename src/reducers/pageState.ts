@@ -1,7 +1,12 @@
 import assocPath from 'ramda/src/assocPath';
 import mergeDeepLeft from 'ramda/src/mergeDeepLeft';
-import { InvokeResponse } from '../interfaces/invokeResponse';
-import { Guid } from 'guid-typescript';
+import { objectData } from '../interfaces/common';
+
+import {
+  InvokeResponse,
+  mapElementInvokeResponses,
+  pageComponentDataResponses
+} from '../interfaces/invokeResponse';
 
 import {
   pageStructureActionTypes,
@@ -15,7 +20,7 @@ import {
 
 interface pageState {
   invokeResponse: InvokeResponse
-  isMoving: Guid | null,
+  isMoving: string | null,
   pendingServiceData: boolean,
 }
 
@@ -52,7 +57,7 @@ const pageStateReducer = (
           pendingServiceData: true,
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
-            pageComponentDataResponses.map((component: any) => {
+            pageComponentDataResponses.map((component: pageComponentDataResponses) => {
               if (syncedData[component.pageComponentId]) {
                 return mergeDeepLeft(syncedData[component.pageComponentId], component);
               } 
@@ -74,7 +79,7 @@ const pageStateReducer = (
           pendingServiceData: false,
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
-            pageComponentDataResponses.map((component: any) => {
+            pageComponentDataResponses.map((component: pageComponentDataResponses) => {
               if (component.pageComponentId === pageComponentId) {
                 return mergeDeepLeft(objectDataResponse, component);
               } 
@@ -94,7 +99,7 @@ const pageStateReducer = (
           ...page,
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
-            pageComponentDataResponses.map((component: any) => {
+            pageComponentDataResponses.map((component: pageComponentDataResponses) => {
               if (component.pageComponentId === pageComponentId) {
                 return {
                   ...component,
@@ -119,11 +124,11 @@ const pageStateReducer = (
           isMoving: outcomeId,
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
-            pageComponentDataResponses.map((component: any) => {
+            pageComponentDataResponses.map((component: pageComponentDataResponses) => {
               if (component.pageComponentId === pageComponentId) {
                 return {
                   ...component,
-                  objectData: component.objectData.map((od: any) => {
+                  objectData: component.objectData.map((od: objectData) => {
                     if (od.externalId === externalId) {
                       return {
                         ...od,
@@ -149,7 +154,7 @@ const pageStateReducer = (
     case SET_FLOW: {
       if (action.payload.mapElementInvokeResponses) {
         const mapElementInvokeResponse = action.payload.mapElementInvokeResponses.find(
-          (response: any) => response.mapElementId === action.payload.currentMapElementId
+          (response: mapElementInvokeResponses) => response.mapElementId === action.payload.currentMapElementId
         );
         return {
           ...page,

@@ -1,5 +1,4 @@
 import { InvokeResponse } from '../interfaces/invokeResponse';
-import { Guid } from 'guid-typescript';
 
 export const SET_FLOW = 'SET_FLOW'
 export const SET_SELECTED_OBJECT_DATA = 'SET_SELECTED_OBJECT_DATA'
@@ -16,24 +15,24 @@ interface SetFlowAction {
 interface SetOutcomeAction {
   type: typeof SET_OUTCOME
   payload: {
-    outcomeId: Guid | null
+    outcomeId: string | null
   }
 }
 
 interface SetSelectedAction {
   type: typeof SET_SELECTED_OBJECT_DATA
   payload: {
-    pageComponentId: Guid
+    pageComponentId: string
     externalId: string
     isSelected: boolean
-    outcomeId: Guid | null 
+    outcomeId: string | null 
   }
 }
 
 interface SetContentValueAction {
   type: typeof SET_CONTENT_VALUE
   payload: {
-    pageComponentId: Guid
+    pageComponentId: string
     contentValue: string 
   }
 }
@@ -42,7 +41,7 @@ interface SetServiceDataAction {
   type: typeof SET_SERVICE_DATA
   payload: {
     objectDataResponse: any,
-    pageComponentId: Guid,
+    pageComponentId: string,
   }
 }
 

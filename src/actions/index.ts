@@ -1,10 +1,15 @@
 import axios from 'axios';
-import { InvokeResponse } from '../interfaces/invokeResponse';
+import { InvokeResponse, objectDataRequest, mapElementInvokeResponses, pageComponentDataResponses } from '../interfaces/invokeResponse';
 import { InvokeRequest } from '../interfaces/invokeRequest';
+import { invokeType, objectData } from '../interfaces/common';
+
+interface ServerResponse {
+  data: any
+}
 
 const baseUrl = 'https://flow.manywho.com';
 
-export const setFlow = (invokeResponse: any) => {
+export const setFlow = (invokeResponse: InvokeResponse) => {
   return {
     type: 'SET_FLOW',
     payload: invokeResponse
@@ -33,10 +38,10 @@ export const clickOutcome = (outcomeId: string) => {
 }
 
 export const initializeFlow = (id: string, versionId: string, manywhotenant: string) => {
-  return async (dispatch: any) => {
+  return async (dispatch: Function) => {
 
     try {
-      const initializationResponse: any = await axios.post(
+      const initializationResponse: ServerResponse = await axios.post(
         `${baseUrl}/api/run/1/state`, {
           id,
           versionId
@@ -61,18 +66,17 @@ export const initializeFlow = (id: string, versionId: string, manywhotenant: str
 }
 
 export const moveFlow = (manywhotenant: string) => {
-  return async (dispatch: any, getState: any) => {
+  return async (dispatch: Function, getState: Function) => {
     const { pageState } = getState();
     const {
       currentMapElementId,
       stateId,
       stateToken,
-      invokeType,
       annotations,
     }: InvokeResponse = pageState.invokeResponse;
 
-    const invokeResponse = {
-      invokeType: 'FORWARD',
+    const requestPayload: InvokeRequest = {
+      invokeType: invokeType.FORWARD,
       stateId,
       stateToken,
       currentMapElementId,
@@ -97,9 +101,9 @@ export const moveFlow = (manywhotenant: string) => {
     };
 
     try {
-      const moveResponse: any = await axios.post(
+      const moveResponse: ServerResponse = await axios.post(
         `${baseUrl}/api/run/1/state/${stateId}`,
-        invokeResponse,
+        requestPayload,
         { headers: { manywhotenant } }
       ).catch(error => {
         throw Error(error.response.data)
@@ -116,7 +120,7 @@ export const moveFlow = (manywhotenant: string) => {
 }
 
 export const syncFlow = (manywhotenant: string) => {
-  return async (dispatch: any, getState: any) => {
+  return async (dispatch: Function, getState: Function) => {
     const { pageState } = getState();
     const {
       currentMapElementId,
@@ -125,8 +129,8 @@ export const syncFlow = (manywhotenant: string) => {
       annotations,
     }: InvokeResponse = pageState.invokeResponse;
 
-    const invokeResponse = {
-      invokeType: 'SYNC',
+    const requestPayload: InvokeRequest = {
+      invokeType: invokeType.SYNC,
       stateId,
       stateToken,
       currentMapElementId,
@@ -136,7 +140,7 @@ export const syncFlow = (manywhotenant: string) => {
         pageRequest: {
           pageComponentInputResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentDataResponses.map((component: any) => {
             return {
-              objectData: component.objectData ? component.objectData.filter((od: any) => od.isSelected) : null,
+              objectData: component.objectData ? component.objectData.filter((od: objectData) => od.isSelected) : null,
               contentValue: component.contentValue,
               pageComponentId: component.pageComponentId,
             }
@@ -151,18 +155,18 @@ export const syncFlow = (manywhotenant: string) => {
     };
 
     try {
-      const syncResponse: any = await axios.post(
+      const syncResponse: ServerResponse = await axios.post(
         `${baseUrl}/api/run/1/state/${stateId}`,
-        invokeResponse,
+        requestPayload,
         { headers: { manywhotenant } }
       ).catch(error => {
         throw Error(error.response.data)
       });
 
       const syncedData = syncResponse.data.mapElementInvokeResponses.find(
-        (response: any) => response.mapElementId === syncResponse.data.currentMapElementId
+        (response: mapElementInvokeResponses) => response.mapElementId === syncResponse.data.currentMapElementId
       ).pageResponse.pageComponentDataResponses
-      .reduce((obj: any, data: any) => Object.assign(obj, { [data.pageComponentId]: data }), {})
+      .reduce((obj: any, data: pageComponentDataResponses) => Object.assign(obj, { [data.pageComponentId]: data }), {})
 
       dispatch({
         type: 'SET_COMPONENT_DATA',
@@ -175,10 +179,14 @@ export const syncFlow = (manywhotenant: string) => {
   }
 }
 
-export const fetchServiceData = (manywhotenant: string, objectDataRequest: any, pageComponentId: string) => {
-  return async (dispatch: any) => {
+export const fetchServiceData = (
+  manywhotenant: string,
+  objectDataRequest: objectDataRequest,
+  pageComponentId: string
+) => {
+  return async (dispatch: Function) => {
     try {
-      const objectDataResponse: any = await axios.post(
+      const objectDataResponse: ServerResponse = await axios.post(
         `${baseUrl}/api/service/1/data`,
         objectDataRequest,
         { headers: { manywhotenant } }

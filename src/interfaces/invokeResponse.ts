@@ -1,4 +1,10 @@
-import { contentType, containerType, invokeType, objectData } from './common';
+import {
+  contentType,
+  containerType,
+  invokeType,
+  objectData,
+  properties
+} from './common';
 
 enum pageActionBindingType {
   SAVE = 'SAVE'
@@ -45,13 +51,31 @@ export interface outcomeResponses {
   attributes?: [any]
   developerName: string
   id: string
-  isBulkAction: boolean,
+  isBulkAction: boolean
   isOut: boolean
   label: string
   order: number
   pageActionBindingType: pageActionBindingType
   pageActionType: string
   pageObjectBindingId?: string
+}
+
+export interface objectDataType {
+  developerName: string
+  typeElementId: string
+  properties: properties
+}
+
+export interface objectDataRequest {
+  authorization: any
+  command: any
+  configurationValues: any
+  listFilter: any
+  objectData: objectData
+  objectDataType: objectDataType
+  stateId: string
+  token: string | null
+  typeElementBindingId: string
 }
 
 export interface pageComponentDataResponses {
@@ -65,7 +89,7 @@ export interface pageComponentDataResponses {
   isValid: boolean
   isVisible: boolean
   objectData: [objectData]
-  objectDataRequest?: any
+  objectDataRequest: objectDataRequest | null
   pageComponentId: string
   tags?: [any]
   validationMessage?: string
@@ -132,12 +156,12 @@ export interface mapElementInvokeResponses {
 
 export interface InvokeResponse {
   alertEmail?: string
-  annotations?: string
+  annotations: string
   authorizationContext?: authorizationContext
   culture?: culture
-  currentMapElementId?: string
+  currentMapElementId: string
   currentStreamId?: string
-  invokeType?: invokeType
+  invokeType: invokeType.FORWARD | invokeType.SYNC
   joinFlowUri?: string
   mapElementInvokeResponses?: [mapElementInvokeResponses]
   selectedMapElementInvokeResponse: mapElementInvokeResponses
@@ -147,9 +171,9 @@ export interface InvokeResponse {
   parentStateId?: string
   preCommitStateValues?: any
   runFlowUri?: string
-  stateId?: string
+  stateId: string
   stateLog?: any
-  stateToken?: string
+  stateToken: string
   stateValues?: any
   statusCode?: number
   voteResponse?: any
