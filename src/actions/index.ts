@@ -72,7 +72,7 @@ export const moveFlow = (manywhotenant: string) => {
     }: InvokeResponse = pageState.invokeResponse;
 
     const invokeResponse = {
-      invokeType,
+      invokeType: 'FORWARD',
       stateId,
       stateToken,
       currentMapElementId,
@@ -108,6 +108,67 @@ export const moveFlow = (manywhotenant: string) => {
       dispatch(
         setFlow(moveResponse.data)
       )
+
+    } catch(error) {
+      console.log(error);
+    }
+  }
+}
+
+export const syncFlow = (manywhotenant: string) => {
+  return async (dispatch: any, getState: any) => {
+    const { pageState } = getState();
+    const {
+      currentMapElementId,
+      stateId,
+      stateToken,
+      annotations,
+    }: InvokeResponse = pageState.invokeResponse;
+
+    const invokeResponse = {
+      invokeType: 'SYNC',
+      stateId,
+      stateToken,
+      currentMapElementId,
+      annotations,
+      geoLocation: null,
+      mapElementInvokeRequest: {
+        pageRequest: {
+          pageComponentInputResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentDataResponses.map((component: any) => {
+            return {
+              objectData: component.objectData ? component.objectData.filter((od: any) => od.isSelected) : null,
+              contentValue: component.contentValue,
+              pageComponentId: component.pageComponentId,
+            }
+          }),
+        },
+        selectedOutcomeId: null,
+      },
+      mode: null,
+      selectedMapElementId: null,
+      navigationElementId: null,
+      selectedNavigationElementId: null
+    };
+
+    try {
+      const syncResponse: any = await axios.post(
+        `${baseUrl}/api/run/1/state/${stateId}`,
+        invokeResponse,
+        { headers: { manywhotenant } }
+      ).catch(error => {
+        throw Error(error.response.data)
+      });
+
+      const syncedData = syncResponse.data.mapElementInvokeResponses.find(
+        (response: any) => response.mapElementId === syncResponse.data.currentMapElementId
+      ).pageResponse.pageComponentDataResponses
+      .filter((response: any) => !response.objectDataRequest)
+      .reduce((obj: any, data: any) => Object.assign(obj, { [data.pageComponentId]: data }), {})
+
+      dispatch({
+        type: 'SET_COMPONENT_DATA',
+        payload: { syncedData }        
+      })
 
     } catch(error) {
       console.log(error);

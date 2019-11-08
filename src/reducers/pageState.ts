@@ -6,6 +6,7 @@ import {
   pageStructureActionTypes,
   SET_FLOW,
   SET_SERVICE_DATA,
+  SET_COMPONENT_DATA,
   SET_SELECTED_OBJECT_DATA,
   SET_CONTENT_VALUE,
   SET_OUTCOME,
@@ -37,6 +38,28 @@ const pageStateReducer = (
       return {
         ...page,
         isMoving: action.payload.outcomeId
+    }
+
+    case SET_COMPONENT_DATA: {
+      const { pageComponentDataResponses } = page.invokeResponse.selectedMapElementInvokeResponse.pageResponse;
+      if (pageComponentDataResponses) {
+        const { syncedData } = action.payload;
+
+        return {
+          ...page,
+          invokeResponse: assocPath(
+            ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
+            pageComponentDataResponses.map((component: any) => {
+              if (syncedData[component.pageComponentId]) {
+                return mergeDeepLeft(syncedData[component.pageComponentId], component);
+              } 
+              return component
+            }),
+            page.invokeResponse,
+          )
+        }
+      }
+      break;
     }
 
     case SET_SERVICE_DATA:

@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchServiceData, setSelected, setContentValue } from '../actions';
+import { fetchServiceData, setSelected, setContentValue, syncFlow } from '../actions';
 
 class ComponentWrapper extends React.Component<any, any> {
   componentDidMount() {
@@ -42,6 +42,7 @@ const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: any) =
 
 const mapDispatchToProps = {
   setSelected,
+  syncFlow,
   setContentValue,
   fetchServiceData,
 }
