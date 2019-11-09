@@ -97,5 +97,21 @@ export const serviceDataRequest = (manywhotenant: string, objectDataRequest: obj
   });
 }
 
+/**
+ * 
+ * @param manywhotenant 
+ * @param navigationPayload
+ * @description https://manywho.github.io/docs-api/#operation/GetNavigation
+ */
+export const navigationRequest = (manywhotenant: string, navigationPayload: any) => {
+  return axios.post(
+    `${baseUrl}/api/run/1/navigation/${navigationPayload.stateId}`,
+    navigationPayload,
+    { headers: { manywhotenant } }
+  ).catch(error => {
+    throw Error(error.response.data)
+  });
+}
+
 
 

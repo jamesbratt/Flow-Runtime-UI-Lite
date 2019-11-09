@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from './components/Container';
 import Outcome from './components/Outcome';
+import NavigationWrapper from './components/NavigationWrapper';
 import pathOr from 'ramda/src/pathOr';
 
 import { initializeFlow, moveFlow } from './actions/pageStateActions';
@@ -54,11 +55,21 @@ class Flow extends React.Component<IApp, {}> {
       pageState.invokeResponse
     );
 
+      // Navigation elements
+      const navigations: any = pathOr(
+        [],
+        ['navigationElementReferences'],
+        pageState.invokeResponse
+      );
+
     return (
       <div className="App">
         {pageState.isLoading ?
           <p>Loading...</p> :
           <>
+            {navigations.map((navigation: any) => {
+              return <NavigationWrapper key={navigation.id} id={navigation.id} />
+            })}
             {containers.map((container: any) => {
               return <Container key={container.id} container={container} />
             })}

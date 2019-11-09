@@ -1,5 +1,3 @@
-
-
 import Table from '../components/Table';
 import Input from '../components/Input';
 
