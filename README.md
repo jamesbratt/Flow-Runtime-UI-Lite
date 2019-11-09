@@ -1,6 +1,24 @@
+## Flow Runtime UI Lite
+
+A React/Redux web app written in TypeScript for running applications built using the
+[Boomi Flow](https://boomi.com/platform/flow/) platform.
+
+### Projects Goals
+
+This has been a learning exercise for me to become as familar as I can with the nuts and bolts
+of why applications built with Flow behave the way that they do, and how a runtime client should interact with the Flow runtime API.
+
+* Strict typing and interfaces.
+* Easy to build and deploy.
+* Developer friendly. The project should be easy to run locally and have clear documentation and commenting throughout.
+* No more players. The UI should consume services that provide Flow specific settings and styling options.
+* No more custom components. The UI should offer a broad range of themed components that are quick and easy to write. Anyone should be able to contribute new components to the project without risking impact to the core codebase. A comprehensive test suite and robust CICD pipeline should ensure that all component contributions are validated and shipped in a timely manner.
+* Conform to WCAG standards.
+* Provide a comprehensive suite of Flow debugging and monitoring tools. (Note for devs - this project uses Redux devtools).
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## Getting set up
 
 In the project directory, you can run:
 
@@ -9,13 +27,24 @@ In the project directory, you can run:
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
+To initialze a new Flow state append your URL with:
+
+```
+/<your-tenant-id>/play/default?flow-id=<your-flow-id>&flow-version-id=<your-flow-version-id>
+```
+
+To join an existing Flow state append your URL with:
+
+```
+/<your-tenant-id>/play/default?join=<your-state-id>
+```
+
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
 ### `npm test`
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+Yawwwwwwwn... but TODO
 
 ### `npm run build`
 
@@ -25,20 +54,8 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.<br />
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+This project has not been ejected yet... hopefully won't need to!
