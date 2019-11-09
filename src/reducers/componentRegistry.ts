@@ -1,9 +1,11 @@
-import Table from '../components/Table';
-import Input from '../components/Input';
+import Table from '../components/themes/material-ui/Table';
+import Input from '../components/themes/material-ui/Input';
+import Navigation from '../components/themes/material-ui/Navigation';
 
 const registry = {
   table: Table,
-  input: Input
+  input: Input,
+  navigation: Navigation,
 }
 
 const componentRegistyReducer = (

@@ -1,6 +1,6 @@
 import React from 'react';
 import Container from './components/Container';
-import Outcome from './components/Outcome';
+import Outcome from './components/themes/material-ui/Outcome';
 import NavigationWrapper from './components/NavigationWrapper';
 import pathOr from 'ramda/src/pathOr';
 

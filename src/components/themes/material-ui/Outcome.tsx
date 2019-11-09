@@ -1,6 +1,6 @@
 import React from 'react';
-import { objectData } from '../interfaces/common';
-import { outcomeResponses } from '../interfaces/invokeResponse';
+import { objectData } from '../../../interfaces/common';
+import { outcomeResponses } from '../../../interfaces/invokeResponse';
 
 interface IOutcome {
   outcome: outcomeResponses,

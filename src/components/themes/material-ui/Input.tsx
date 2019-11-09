@@ -3,7 +3,7 @@ import React from 'react';
 import {
   pageComponentDataResponses,
   pageComponentResponses,
-} from '../interfaces/invokeResponse';
+} from '../../../interfaces/invokeResponse';
 
 interface IInput {
   id: string,

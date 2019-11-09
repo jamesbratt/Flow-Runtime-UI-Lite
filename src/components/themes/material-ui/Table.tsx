@@ -1,13 +1,13 @@
 import React from 'react';
 import Outcome from './Outcome';
-import { objectData, properties } from '../interfaces/common';
+import { objectData, properties } from '../../../interfaces/common';
 
 import {
   outcomeResponses,
   pageComponentDataResponses,
   pageComponentResponses,
   column,
-} from '../interfaces/invokeResponse';
+} from '../../../interfaces/invokeResponse';
 
 interface ITable {
   id: string,
