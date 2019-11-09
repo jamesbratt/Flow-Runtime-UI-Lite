@@ -3,6 +3,15 @@ import { InvokeRequest } from '../interfaces/invokeRequest';
 import { invokeType, objectData } from '../interfaces/common';
 import { joinRequest, invokeRequest, runRequest, serviceDataRequest } from '../utils/flowClient';
 
+import {
+  SET_FLOW,
+  SET_CONTENT_VALUE,
+  IS_LOADING,
+  SET_SERVICE_DATA,
+  SET_COMPONENT_DATA,
+  IS_COMPONENT_FETCHING_SERVICE_DATA,
+} from '../actions/types';
+
 interface ServerResponse {
   data: any
 }
@@ -16,7 +25,7 @@ const baseUrl = 'https://flow.manywho.com';
  */
 export const setFlow = (invokeResponse: InvokeResponse) => {
   return {
-    type: 'SET_FLOW',
+    type: SET_FLOW,
     payload: invokeResponse
   }
 }
@@ -29,7 +38,7 @@ export const setFlow = (invokeResponse: InvokeResponse) => {
  */
 export const setContentValue = (pageComponentId: string, contentValue: string | number) => {
   return {
-    type: 'SET_CONTENT_VALUE',
+    type: SET_CONTENT_VALUE,
     payload: { pageComponentId, contentValue }
   }
 }
@@ -39,7 +48,7 @@ export const setContentValue = (pageComponentId: string, contentValue: string | 
  */
 export const isLoading = () => {
   return {
-    type: 'IS_LOADING',
+    type: IS_LOADING,
     payload: true
   }
 }
@@ -394,7 +403,7 @@ export const syncFlow = (manywhotenant: string) => {
       .reduce((obj: any, data: pageComponentDataResponses) => Object.assign(obj, { [data.pageComponentId]: data }), {})
 
       dispatch({
-        type: 'SET_COMPONENT_DATA',
+        type: SET_COMPONENT_DATA,
         payload: { syncedData }        
       })
 
@@ -422,7 +431,7 @@ export const fetchServiceData = (
   return async (dispatch: Function) => {
 
     dispatch({
-      type: 'IS_COMPONENT_FETCHING_SERVICE_DATA',
+      type: IS_COMPONENT_FETCHING_SERVICE_DATA,
       payload: pageComponentId      
     })
 
@@ -432,7 +441,7 @@ export const fetchServiceData = (
       );
   
       dispatch({
-        type: 'SET_SERVICE_DATA',
+        type: SET_SERVICE_DATA,
         payload: { objectDataResponse: objectDataResponse.data, pageComponentId }        
       })
   
