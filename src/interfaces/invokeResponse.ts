@@ -1,3 +1,9 @@
+/**
+ * Describes the shape of data we get back from the engine
+ * when making invoke requests. These are the instructions
+ * given to the UI to tell it what to render
+ */
+
 import {
   contentType,
   containerType,
@@ -6,10 +12,12 @@ import {
   properties
 } from './common';
 
+// Hmmm...
 enum pageActionBindingType {
   SAVE = 'SAVE'
 }
 
+// Something to do with...
 export interface authorizationContext {
   authenticationType: string
   directoryId?: string
@@ -17,6 +25,7 @@ export interface authorizationContext {
   loginUrl?: string
 }
 
+// Yeah... something
 export interface culture {
   brand?: string
   country: string
@@ -27,6 +36,7 @@ export interface culture {
   variant?: string
 }
 
+// Describes a single page component column
 export interface column {
   componentType: string,
   contentType: contentType,
@@ -48,6 +58,7 @@ export interface column {
   width: number,
 }
 
+// Describes a single outcome to be displayed
 export interface outcomeResponses {
   attributes?: [any]
   developerName: string
@@ -61,12 +72,14 @@ export interface outcomeResponses {
   pageObjectBindingId?: string
 }
 
+// Yeah... dunno
 export interface objectDataType {
   developerName: string
   typeElementId: string
   properties: properties
 }
 
+// Describes how a page component makes an objectdata request
 export interface objectDataRequest {
   authorization: any
   command: any
@@ -79,6 +92,7 @@ export interface objectDataRequest {
   typeElementBindingId: string
 }
 
+// Describes a single page components data
 export interface pageComponentDataResponses {
   content?: string
   contentValue?: string
@@ -96,6 +110,7 @@ export interface pageComponentDataResponses {
   validationMessage?: string
 }
 
+// Describes a single page component
 export interface pageComponentResponses {
   attributes?: [any]
   columns: [column]
@@ -118,6 +133,7 @@ export interface pageComponentResponses {
   width: number
 }
 
+// Describes a single page containers data
 export interface pageContainerDataResponses {
   isEditable: boolean
   isEnabled: boolean
@@ -126,6 +142,7 @@ export interface pageContainerDataResponses {
   tags?: [any]
 }
 
+// Describes a single page container
 export interface pageContainerResponses {
   attributes?: [any]
   containerType: containerType
@@ -136,6 +153,8 @@ export interface pageContainerResponses {
   pageContainerResponses: [pageContainerResponses]
 }
 
+// Describes data specifically to do with what is
+// displayed on the page
 export interface pageResponse {
   attributes?: [any]
   label?: string
@@ -147,6 +166,7 @@ export interface pageResponse {
   tags?: [any]
 }
 
+// Describes the UI data for a specific map element
 export interface mapElementInvokeResponses {
   developerName?: string
   mapElementId?: string
@@ -155,6 +175,7 @@ export interface mapElementInvokeResponses {
   rootFaults?: [any]
 }
 
+// The data structure received in the invoke response
 export interface InvokeResponse {
   alertEmail?: string
   annotations: string
