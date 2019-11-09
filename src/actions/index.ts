@@ -2,6 +2,7 @@ import { InvokeResponse, objectDataRequest, mapElementInvokeResponses, pageCompo
 import { InvokeRequest } from '../interfaces/invokeRequest';
 import { invokeType, objectData } from '../interfaces/common';
 import { initializationRequest, invokeRequest, serviceDataRequest } from '../utils/flowClient';
+import { assocPath } from 'ramda';
 
 interface ServerResponse {
   data: any
@@ -16,10 +17,87 @@ export const setFlow = (invokeResponse: InvokeResponse) => {
   }
 }
 
-export const setSelected = (pageComponentId: string, externalId: string, isSelected: boolean, outcomeId: string) => {
-  return {
-    type: 'SET_SELECTED_OBJECT_DATA',
-    payload: { pageComponentId, externalId, isSelected, outcomeId }
+export const setSelected = (
+  pageComponentId: string,
+  externalId: string,
+  isSelected: boolean,
+  outcomeId: string,
+  manywhotenant: string,
+) => {
+  return async (dispatch: Function, getState: Function) => {
+
+    dispatch(
+      isLoading()
+    );
+
+    const { pageState } = getState();
+    const {
+      currentMapElementId,
+      stateId,
+      stateToken,
+      selectedMapElementInvokeResponse,
+    } = pageState.invokeResponse;
+
+    const { pageComponentDataResponses } = selectedMapElementInvokeResponse.pageResponse;
+
+    const pageComponentInputResponses = pageComponentDataResponses.map((component: pageComponentDataResponses) => {
+      if (component.pageComponentId === pageComponentId) {
+        return {
+          ...component,
+          objectData: component.objectData.map((od: objectData) => {
+            if (od.externalId === externalId) {
+              return {
+                ...od,
+                isSelected: isSelected,
+              }
+            }
+            return  {
+              ...od,
+              isSelected: false,
+            }
+          })
+        } 
+      } 
+      return component
+    }).map((component: pageComponentDataResponses) => {
+      return {
+        objectData: component.objectData ? component.objectData.filter((od: objectData) => od.isSelected) : null,
+        contentValue: component.contentValue,
+        pageComponentId: component.pageComponentId,
+      }
+    });
+
+    const requestPayload: InvokeRequest = {
+      invokeType: invokeType.FORWARD,
+      stateId,
+      stateToken,
+      currentMapElementId,
+      annotations: null,
+      geoLocation: null,
+      mapElementInvokeRequest: {
+        pageRequest: {
+          pageComponentInputResponses,
+        },
+        selectedOutcomeId: outcomeId,
+      },
+      mode: null,
+      selectedMapElementId: null,
+      navigationElementId: null,
+      selectedNavigationElementId: null
+    };
+
+    try {
+      const moveResponse: ServerResponse = await invokeRequest(
+        pageState.invokeResponse.stateId, manywhotenant, requestPayload,
+      );
+
+      dispatch(
+        setFlow(moveResponse.data)
+      )
+
+    } catch(error) {
+      console.log(error);
+    }
   }
 }
 
@@ -30,15 +108,19 @@ export const setContentValue = (pageComponentId: string, contentValue: string | 
   }
 }
 
-export const clickOutcome = (outcomeId: string) => {
+export const isLoading = () => {
   return {
-    type: 'SET_OUTCOME',
-    payload: { outcomeId }
+    type: 'IS_LOADING',
+    payload: true
   }
 }
 
 export const initializeFlow = (id: string, versionId: string, manywhotenant: string) => {
   return async (dispatch: Function) => {
+
+    dispatch(
+      isLoading()
+    );
 
     try {
       const initializationResponse: ServerResponse = await initializationRequest(
@@ -46,7 +128,6 @@ export const initializeFlow = (id: string, versionId: string, manywhotenant: str
       );
 
       const joinUri = initializationResponse.data.joinFlowUri.replace(baseUrl, '');
-
       history.pushState(null, '', joinUri);
 
       dispatch(
@@ -59,8 +140,13 @@ export const initializeFlow = (id: string, versionId: string, manywhotenant: str
   }
 }
 
-export const moveFlow = (manywhotenant: string) => {
+export const clickOutcome = (manywhotenant: string, outcomeId: string) => {
   return async (dispatch: Function, getState: Function) => {
+
+    dispatch(
+      isLoading()
+    );
+
     const { pageState } = getState();
     const {
       currentMapElementId,
@@ -89,7 +175,7 @@ export const moveFlow = (manywhotenant: string) => {
             }
           }),
         },
-        selectedOutcomeId: pageState.isMoving,
+        selectedOutcomeId: outcomeId,
       },
       mode: null,
       selectedMapElementId: null,
@@ -114,6 +200,11 @@ export const moveFlow = (manywhotenant: string) => {
 
 export const syncFlow = (manywhotenant: string) => {
   return async (dispatch: Function, getState: Function) => {
+
+    dispatch(
+      isLoading()
+    );
+
     const { pageState } = getState();
     const {
       currentMapElementId,
@@ -177,6 +268,15 @@ export const fetchServiceData = (
   pageComponentId: string
 ) => {
   return async (dispatch: Function) => {
+
+    dispatch({
+      type: 'IS_COMPONENT_FETCHING_SERVICE_DATA',
+      payload: {
+        isLoading: true,
+        pageComponentId,
+      }       
+    })
+
     try {
       const objectDataResponse: ServerResponse = await serviceDataRequest(
         manywhotenant, objectDataRequest,

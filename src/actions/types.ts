@@ -3,7 +3,7 @@ import { InvokeResponse } from '../interfaces/invokeResponse';
 export const SET_FLOW = 'SET_FLOW'
 export const SET_SELECTED_OBJECT_DATA = 'SET_SELECTED_OBJECT_DATA'
 export const SET_CONTENT_VALUE = 'SET_CONTENT_VALUE'
-export const SET_OUTCOME = 'SET_OUTCOME'
+export const IS_LOADING = 'IS_LOADING'
 export const SET_SERVICE_DATA = 'SET_SERVICE_DATA'
 export const SET_COMPONENT_DATA = 'SET_COMPONENT_DATA'
 
@@ -12,11 +12,9 @@ interface SetFlowAction {
   payload: InvokeResponse
 }
 
-interface SetOutcomeAction {
-  type: typeof SET_OUTCOME
-  payload: {
-    outcomeId: string | null
-  }
+interface SetLoaderAction {
+  type: typeof IS_LOADING
+  payload: boolean
 }
 
 interface SetSelectedAction {
@@ -52,4 +50,4 @@ interface SetComponentDataAction {
   }
 }
 
-export type pageStructureActionTypes = SetComponentDataAction | SetServiceDataAction | SetFlowAction | SetSelectedAction | SetContentValueAction | SetOutcomeAction
+export type pageStructureActionTypes = SetComponentDataAction | SetServiceDataAction | SetFlowAction | SetSelectedAction | SetContentValueAction | SetLoaderAction

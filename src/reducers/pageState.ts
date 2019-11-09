@@ -1,9 +1,8 @@
 import assocPath from 'ramda/src/assocPath';
 import mergeDeepLeft from 'ramda/src/mergeDeepLeft';
-import { objectData } from '../interfaces/common';
+import append from 'ramda/src/append';
 
 import {
-  InvokeResponse,
   mapElementInvokeResponses,
   pageComponentDataResponses
 } from '../interfaces/invokeResponse';
@@ -11,18 +10,11 @@ import {
 import {
   pageStructureActionTypes,
   SET_FLOW,
+  IS_LOADING,
   SET_SERVICE_DATA,
   SET_COMPONENT_DATA,
-  SET_SELECTED_OBJECT_DATA,
   SET_CONTENT_VALUE,
-  SET_OUTCOME,
 } from '../actions/types';
-
-interface pageState {
-  invokeResponse: InvokeResponse
-  isMoving: string | null,
-  pendingServiceData: boolean,
-}
 
 const initialState = {
   invokeResponse: {
@@ -32,21 +24,15 @@ const initialState = {
       },
     },
   },
-  isMoving: null,
-  pendingServiceData: true,
+  isFetchingServiceData: [],
+  isLoading: false,
 }
 
 const pageStateReducer = (
-  page: pageState = initialState,
+  page: any = initialState,
   action: pageStructureActionTypes
 ): any => {
   switch (action.type) {
-    case SET_OUTCOME:
-      return {
-        ...page,
-        isMoving: action.payload.outcomeId
-    }
-
     case SET_COMPONENT_DATA: {
       const { pageComponentDataResponses } = page.invokeResponse.selectedMapElementInvokeResponse.pageResponse;
       if (pageComponentDataResponses) {
@@ -54,7 +40,7 @@ const pageStateReducer = (
 
         return {
           ...page,
-          pendingServiceData: true,
+          isLoading: false,
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: pageComponentDataResponses) => {
@@ -76,7 +62,8 @@ const pageStateReducer = (
         const { pageComponentId, objectDataResponse } = action.payload;
         return {
           ...page,
-          pendingServiceData: false,
+          isLoading: false,
+          isFetchingServiceData: page.isFetchingServiceData.filter(sd => sd.pageComponentId !== pageComponentId),
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: pageComponentDataResponses) => {
@@ -115,42 +102,6 @@ const pageStateReducer = (
       break;
     }
 
-    case SET_SELECTED_OBJECT_DATA: {
-      const { pageComponentDataResponses } = page.invokeResponse.selectedMapElementInvokeResponse.pageResponse;
-      if (pageComponentDataResponses) {
-        const { pageComponentId, externalId, isSelected, outcomeId } = action.payload;
-        return {
-          ...page,
-          isMoving: outcomeId,
-          invokeResponse: assocPath(
-            ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
-            pageComponentDataResponses.map((component: pageComponentDataResponses) => {
-              if (component.pageComponentId === pageComponentId) {
-                return {
-                  ...component,
-                  objectData: component.objectData.map((od: objectData) => {
-                    if (od.externalId === externalId) {
-                      return {
-                        ...od,
-                        isSelected: isSelected,
-                      }
-                    }
-                    return  {
-                      ...od,
-                      isSelected: false,
-                    }
-                  })
-                } 
-              } 
-              return component
-            }),
-            page.invokeResponse,
-          )
-        }
-      }
-      break;
-    }
-
     case SET_FLOW: {
       if (action.payload.mapElementInvokeResponses) {
         const mapElementInvokeResponse = action.payload.mapElementInvokeResponses.find(
@@ -158,12 +109,25 @@ const pageStateReducer = (
         );
         return {
           ...page,
-          isMoving: null,
-          pendingServiceData: true,
+          isLoading: false,
           invokeResponse: assocPath(['selectedMapElementInvokeResponse'], mapElementInvokeResponse, action.payload),
         }
       }
       break;
+    }
+
+    case IS_LOADING: {
+      return {
+        ...page,
+        isLoading: action.payload,
+      }
+    }
+
+    case 'IS_COMPONENT_FETCHING_SERVICE_DATA': {
+      return {
+        ...page,
+        isFetchingServiceData: append(action.payload, page.isFetchingServiceData),
+      }
     }
     default:
       return page

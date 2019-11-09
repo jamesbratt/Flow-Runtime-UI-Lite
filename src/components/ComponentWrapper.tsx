@@ -16,7 +16,7 @@ interface componentWrapperProps {
   componentRegistry: any,
   fetchServiceData: Function,
   componentType: string,
-  pendingServiceData: boolean,
+  isFetchingServiceData: boolean,
 }
 
 class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
@@ -32,24 +32,12 @@ class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
     }
   }
 
-  componentDidUpdate(prevProps: componentWrapperProps) {
-    const { objectDataRequest } = this.props.pageComponentData;
-    const { objectDataRequest: previousObjectDataRequest } = prevProps.pageComponentData;
-    if (objectDataRequest && (previousObjectDataRequest !== objectDataRequest)) {
-      this.props.fetchServiceData(
-        '84980601-01a4-489c-bbff-870bd6a13120',
-        objectDataRequest,
-        this.props.id,
-      );
-    }
-  }
-
   render() {
     const Component = this.props.componentRegistry[this.props.componentType];
     const { objectDataRequest } = this.props.pageComponentData;
     return (
       <>
-        {this.props.pendingServiceData && objectDataRequest ?
+        {this.props.isFetchingServiceData && objectDataRequest ?
           <p>Fetching data from a service...</p> :
           <Component {...this.props} />
         }
@@ -59,14 +47,20 @@ class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
 }
 
 const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: componentWrapperProps) => ({
+
   pageComponent: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentResponses.find(
     ((component: pageComponentResponses) => component.id === ownProps.id)
   ),
+
   pageComponentData: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentDataResponses.find(
     ((component: pageComponentDataResponses) => component.pageComponentId === ownProps.id)
   ),
+
   outcomeResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.outcomeResponses,
-  pendingServiceData: pageState.pendingServiceData,
+
+  isFetchingServiceData: pageState.isFetchingServiceData.find(
+    (sd : any) => sd.pageComponentId === ownProps.id
+  ) ? true : false,
   componentRegistry,
 });
 
