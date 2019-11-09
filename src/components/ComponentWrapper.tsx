@@ -46,7 +46,7 @@ class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
   }
 }
 
-const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: componentWrapperProps) => ({
+const mapStateToProps = ({ pageState, componentRegistry, componentsFetchingObjectData }: any, ownProps: componentWrapperProps) => ({
 
   pageComponent: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentResponses.find(
     ((component: pageComponentResponses) => component.id === ownProps.id)
@@ -58,8 +58,8 @@ const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: compon
 
   outcomeResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.outcomeResponses,
 
-  isFetchingServiceData: pageState.isFetchingServiceData.find(
-    (sd : any) => sd.pageComponentId === ownProps.id
+  isFetchingServiceData: componentsFetchingObjectData.find(
+    (componentId : any) => componentId === ownProps.id
   ) ? true : false,
   componentRegistry,
 });

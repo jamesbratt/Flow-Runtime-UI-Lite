@@ -1,6 +1,6 @@
 ## Lets talk about Flow state
 
-So currently the Redux store is split into two parts - pageState and componentRegistry.
+So currently the Redux store is split into three parts - pageState, componentRegistry and Components Fetching objectData.
 These parts of the store are pretty self explanatory, but here goes...
 
 ### Page State
@@ -22,3 +22,13 @@ Page state is the single source of truth for the UI.
 Really simple - Just a bunch of key value pairs. The key being the component name and the value the
 corresponding React component. Holding this in our Redux store allows for React components to be rendered
 on the fly based on what components the page state is telling the UI to render.
+
+### Components Fetching objectData
+This is literally just an array of page component IDs. An ID gets added to the store whilst that specific page
+component is in a state of fetching objectdata. Once the objectdata for that component has been received,
+the ID is removed.
+The reason for this is so that the UI has a way of tracking which components are still waiting for data.
+The engine delegates the responsibility of retrieving service data to the
+client. This means that there is potentially multiple asynchronous requests being made by individual
+components. We could abstract the initiation of these requests away from the components and wait for each one to resolve before rendering the UI (which would negate the need for this store), however, this would
+offer a poor UX as each objectdata request can take upwards of 1 second to make. This solution prevents blocking other components from rendering on the page.

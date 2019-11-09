@@ -9,6 +9,11 @@ interface ServerResponse {
 
 const baseUrl = 'https://flow.manywho.com';
 
+/**
+ * 
+ * @param invokeResponse 
+ * @description A dump of the engines invoke response
+ */
 export const setFlow = (invokeResponse: InvokeResponse) => {
   return {
     type: 'SET_FLOW',
@@ -16,6 +21,12 @@ export const setFlow = (invokeResponse: InvokeResponse) => {
   }
 }
 
+/**
+ * 
+ * @param pageComponentId 
+ * @param contentValue 
+ * @description Sets the contentValue of a specified page component
+ */
 export const setContentValue = (pageComponentId: string, contentValue: string | number) => {
   return {
     type: 'SET_CONTENT_VALUE',
@@ -23,6 +34,9 @@ export const setContentValue = (pageComponentId: string, contentValue: string | 
   }
 }
 
+/**
+ * @description Something asynchronous is happening...
+ */
 export const isLoading = () => {
   return {
     type: 'IS_LOADING',
@@ -370,6 +384,10 @@ export const syncFlow = (manywhotenant: string) => {
         stateId, manywhotenant, requestPayload,
       );
 
+      // The page component data updates that we are actually interested in
+      // are nested in a load of junk. So this is just for convenience
+      // so that it is easy for the reducer to just do a deep merge with the page component
+      // data currently in state.
       const syncedData = syncResponse.data.mapElementInvokeResponses.find(
         (response: mapElementInvokeResponses) => response.mapElementId === syncResponse.data.currentMapElementId
       ).pageResponse.pageComponentDataResponses
@@ -386,6 +404,16 @@ export const syncFlow = (manywhotenant: string) => {
   }
 }
 
+/**
+ * 
+ * @param manywhotenant 
+ * @param objectDataRequest payload to send when making an objectdata request.
+ * This is derived from the component data provided by the engine invoke response.
+ * 
+ * @param pageComponentId
+ * @description Tells the engine to fetch objectdata derived from a service
+ * e.g. Salesorce, for a specific component (one that leverages service data)
+ */
 export const fetchServiceData = (
   manywhotenant: string,
   objectDataRequest: objectDataRequest,
@@ -395,10 +423,7 @@ export const fetchServiceData = (
 
     dispatch({
       type: 'IS_COMPONENT_FETCHING_SERVICE_DATA',
-      payload: {
-        isLoading: true,
-        pageComponentId,
-      }       
+      payload: pageComponentId      
     })
 
     try {

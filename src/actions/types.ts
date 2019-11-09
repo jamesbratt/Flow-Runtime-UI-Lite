@@ -6,6 +6,7 @@ export const SET_CONTENT_VALUE = 'SET_CONTENT_VALUE'
 export const IS_LOADING = 'IS_LOADING'
 export const SET_SERVICE_DATA = 'SET_SERVICE_DATA'
 export const SET_COMPONENT_DATA = 'SET_COMPONENT_DATA'
+export const IS_COMPONENT_FETCHING_SERVICE_DATA = 'IS_COMPONENT_FETCHING_SERVICE_DATA'
 
 interface SetFlowAction {
   type: typeof SET_FLOW
@@ -40,4 +41,10 @@ interface SetComponentDataAction {
   }
 }
 
+interface IsServiceDataFetchingAction {
+  type: typeof IS_COMPONENT_FETCHING_SERVICE_DATA
+  payload: string
+}
+
 export type pageStructureActionTypes = SetComponentDataAction | SetServiceDataAction | SetFlowAction | SetContentValueAction | SetLoaderAction
+export type componentsFetchingObjectDataActionTypes = IsServiceDataFetchingAction | SetServiceDataAction

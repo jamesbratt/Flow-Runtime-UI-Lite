@@ -1,6 +1,5 @@
 import assocPath from 'ramda/src/assocPath';
 import mergeDeepLeft from 'ramda/src/mergeDeepLeft';
-import append from 'ramda/src/append';
 
 import {
   mapElementInvokeResponses,
@@ -24,7 +23,6 @@ const initialState = {
       },
     },
   },
-  isFetchingServiceData: [],
   isLoading: false,
 }
 
@@ -83,7 +81,6 @@ const pageStateReducer = (
         return {
           ...page,
           isLoading: false,
-          isFetchingServiceData: page.isFetchingServiceData.filter(sd => sd.pageComponentId !== pageComponentId),
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: pageComponentDataResponses) => {
@@ -160,12 +157,6 @@ const pageStateReducer = (
       }
     }
 
-    case 'IS_COMPONENT_FETCHING_SERVICE_DATA': {
-      return {
-        ...page,
-        isFetchingServiceData: append(action.payload, page.isFetchingServiceData),
-      }
-    }
     default:
       return page
   }
