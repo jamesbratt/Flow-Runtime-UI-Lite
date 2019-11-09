@@ -19,10 +19,21 @@ interface componentWrapperProps {
   isFetchingServiceData: boolean,
 }
 
+/**
+ * @description A higher order component that takes care of all the heavy
+ * lifting so that page components can be functional and remain as "dumb" as possible.
+ * By subscribing to the redux store the wrapper can determine what data from
+ * the store the dumb component needs during mapping redux state to its props.
+ * These additional props can then be inherited by the dumb component being
+ * wrapped.
+ */
 class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
 
   componentDidMount() {
     const { objectDataRequest } = this.props.pageComponentData;
+
+    // If the component needs to make an objectdata request
+    // then lets go ahead.
     if (objectDataRequest) {
       this.props.fetchServiceData(
         '84980601-01a4-489c-bbff-870bd6a13120',

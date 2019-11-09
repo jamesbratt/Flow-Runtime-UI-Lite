@@ -1,9 +1,21 @@
+/**
+ * A client utility for making requests to the Flow runtime API
+ * See the docs: https://manywho.github.io/docs-api/
+ */
+
 import axios from 'axios';
 import { objectDataRequest } from '../interfaces/invokeResponse';
 import { InvokeRequest } from '../interfaces/invokeRequest';
 
 const baseUrl = 'https://flow.manywho.com';
 
+/**
+ * 
+ * @param id 
+ * @param versionId 
+ * @param manywhotenant
+ * @description https://manywho.github.io/docs-api/#operation/InitializeFlow
+ */
 export const runRequest = (id: string, versionId: string, manywhotenant: string) => {
   return axios.post(
     `${baseUrl}/api/run/1`, {
@@ -18,6 +30,13 @@ export const runRequest = (id: string, versionId: string, manywhotenant: string)
   });
 }
 
+/**
+ * 
+ * @param id 
+ * @param versionId 
+ * @param manywhotenant
+ * @description https://manywho.github.io/docs-api/#operation/SimpleInitializeFlow
+ */
 export const initializationRequest = (id: string, versionId: string, manywhotenant: string) => {
   return axios.post(
     `${baseUrl}/api/run/1/state`, {
@@ -30,6 +49,12 @@ export const initializationRequest = (id: string, versionId: string, manywhotena
   });
 }
 
+/**
+ * 
+ * @param stateId 
+ * @param manywhotenant
+ * @description https://manywho.github.io/docs-api/#operation/JoinState
+ */
 export const joinRequest = (stateId: string, manywhotenant: string) => {
   return axios.get(
     `${baseUrl}/api/run/1/state/${stateId}`,
@@ -39,6 +64,13 @@ export const joinRequest = (stateId: string, manywhotenant: string) => {
   });
 }
 
+/**
+ * 
+ * @param stateId 
+ * @param manywhotenant 
+ * @param requestPayload
+ * @description https://manywho.github.io/docs-api/#operation/InvokeState
+ */
 export const invokeRequest = (stateId: string, manywhotenant: string, requestPayload: InvokeRequest) => {
   console.log(`joined with ${stateId}`)
   return axios.post(
@@ -50,6 +82,12 @@ export const invokeRequest = (stateId: string, manywhotenant: string, requestPay
   });
 }
 
+/**
+ * 
+ * @param manywhotenant 
+ * @param objectDataRequest
+ * @description https://manywho.github.io/docs-api/#tag/Service-Data
+ */
 export const serviceDataRequest = (manywhotenant: string, objectDataRequest: objectDataRequest) => {
   return axios.post(
     `${baseUrl}/api/service/1/data`,
