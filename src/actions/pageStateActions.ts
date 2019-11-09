@@ -151,14 +151,15 @@ export const initializeFlow = () => {
  * before constructing an invoke request payload to give to the engine
  * to tell it what has changed in the current Flow state.
  */
-export const moveFlow = (manywhotenant: string, outcomeId: string) => {
+export const moveFlow = (outcomeId: string) => {
   return async (dispatch: Function, getState: Function) => {
 
     dispatch(
       isLoading()
     );
 
-    const { pageState } = getState();
+    const { pageState, settings } = getState();
+    const manywhotenant = settings.tenantId;
     const {
       currentMapElementId,
       stateId,
@@ -230,7 +231,6 @@ export const moveFlow = (manywhotenant: string, outcomeId: string) => {
  * @param externalId An ID representing a single objectdata
  * @param isSelected 
  * @param outcomeId 
- * @param manywhotenant
  * 
  * @description Sometimes we need to move through a Flow based on an objectdata
  * selection that has been made. An example of this would be when there is an
@@ -242,7 +242,6 @@ export const moveWithSelection = (
   externalId: string,
   isSelected: boolean,
   outcomeId: string,
-  manywhotenant: string,
 ) => {
   return async (dispatch: Function, getState: Function) => {
 
@@ -250,7 +249,8 @@ export const moveWithSelection = (
       isLoading()
     );
 
-    const { pageState } = getState();
+    const { pageState, settings } = getState();
+    const manywhotenant = settings.tenantId;
     const {
       currentMapElementId,
       stateId,
@@ -332,8 +332,6 @@ export const moveWithSelection = (
 }
 
 /**
- * 
- * @param manywhotenant 
  * @description As far as I am aware, a sync request is only ever needed
  * for when a page condition is triggered. Essentially, we tell the engine
  * what page component data has changed and it responds with giving as all the page component
@@ -341,14 +339,15 @@ export const moveWithSelection = (
  * No information is given back as to what page components are to be rendered
  * by the UI as it is only the component data that is changed. 
  */
-export const syncFlow = (manywhotenant: string) => {
+export const syncFlow = () => {
   return async (dispatch: Function, getState: Function) => {
 
     dispatch(
       isLoading()
     );
 
-    const { pageState } = getState();
+    const { pageState, settings } = getState();
+    const manywhotenant = settings.tenantId;
     const {
       currentMapElementId,
       stateId,
@@ -414,8 +413,6 @@ export const syncFlow = (manywhotenant: string) => {
 }
 
 /**
- * 
- * @param manywhotenant 
  * @param objectDataRequest payload to send when making an objectdata request.
  * This is derived from the component data provided by the engine invoke response.
  * 
@@ -424,11 +421,13 @@ export const syncFlow = (manywhotenant: string) => {
  * e.g. Salesorce, for a specific component (one that leverages service data)
  */
 export const fetchServiceData = (
-  manywhotenant: string,
   objectDataRequest: objectDataRequest,
   pageComponentId: string
 ) => {
-  return async (dispatch: Function) => {
+  return async (dispatch: Function, getState: Function) => {
+
+    const { settings } = getState();
+    const manywhotenant = settings.tenantId;
 
     dispatch({
       type: IS_COMPONENT_FETCHING_SERVICE_DATA,

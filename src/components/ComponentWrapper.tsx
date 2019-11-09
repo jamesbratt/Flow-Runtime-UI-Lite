@@ -36,7 +36,6 @@ class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
     // then lets go ahead.
     if (objectDataRequest) {
       this.props.fetchServiceData(
-        '84980601-01a4-489c-bbff-870bd6a13120',
         objectDataRequest,
         this.props.id,
       );

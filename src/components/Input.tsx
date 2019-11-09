@@ -24,7 +24,7 @@ const Input: React.FC<IInput> = ({ pageComponent, pageComponentData, setContentV
   const { id, label, contentType, hasEvents } = pageComponent;
 
   const onChange = () => {
-    syncFlow('84980601-01a4-489c-bbff-870bd6a13120');
+    syncFlow();
   }
   
   return (

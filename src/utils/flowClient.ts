@@ -72,7 +72,6 @@ export const joinRequest = (stateId: string, manywhotenant: string) => {
  * @description https://manywho.github.io/docs-api/#operation/InvokeState
  */
 export const invokeRequest = (stateId: string, manywhotenant: string, requestPayload: InvokeRequest) => {
-  console.log(`joined with ${stateId}`)
   return axios.post(
     `${baseUrl}/api/run/1/state/${stateId}`,
     requestPayload,

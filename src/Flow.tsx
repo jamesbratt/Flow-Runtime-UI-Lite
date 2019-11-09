@@ -34,7 +34,7 @@ class Flow extends React.Component<IApp, {}> {
   }
 
   onOutcomeClick = (outComeId: string) => {
-    this.props.moveFlow('84980601-01a4-489c-bbff-870bd6a13120', outComeId)
+    this.props.moveFlow(outComeId)
   }
 
   render() {

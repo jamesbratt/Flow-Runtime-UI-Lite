@@ -31,6 +31,7 @@ const Container: React.FC<IContainer> = ({ container, pageComponents }) => {
             container={child}
           /> : 
           <ComponentWrapper
+            key={child.id}
             id={child.id}
             componentType={child.componentType}
           />

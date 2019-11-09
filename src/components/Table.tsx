@@ -25,7 +25,6 @@ const Table: React.FC<ITable> = ({ id, pageComponent, pageComponentData, outcome
       objectData.externalId,
       true,
       outcomeId,
-      '84980601-01a4-489c-bbff-870bd6a13120',
     )
   }
 
