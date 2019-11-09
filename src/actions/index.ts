@@ -1,8 +1,7 @@
 import { InvokeResponse, objectDataRequest, mapElementInvokeResponses, pageComponentDataResponses } from '../interfaces/invokeResponse';
 import { InvokeRequest } from '../interfaces/invokeRequest';
 import { invokeType, objectData } from '../interfaces/common';
-import { initializationRequest, invokeRequest, serviceDataRequest } from '../utils/flowClient';
-import { assocPath } from 'ramda';
+import { joinRequest, initializationRequest, invokeRequest, runRequest, serviceDataRequest } from '../utils/flowClient';
 
 interface ServerResponse {
   data: any
@@ -115,27 +114,64 @@ export const isLoading = () => {
   }
 }
 
-export const initializeFlow = (id: string, versionId: string, manywhotenant: string) => {
+export const initializeFlow = () => {
   return async (dispatch: Function) => {
 
     dispatch(
       isLoading()
     );
 
-    try {
-      const initializationResponse: ServerResponse = await initializationRequest(
-        id, versionId, manywhotenant,
-      );
+    const currentUrl = window.location;
+    const urlParams = new URLSearchParams(currentUrl.search);
 
-      const joinUri = initializationResponse.data.joinFlowUri.replace(baseUrl, '');
-      history.pushState(null, '', joinUri);
+    const stateIdToJoin = urlParams.get('join');
+    const id = urlParams.get('flow-id');
+    const versionId = urlParams.get('flow-version-id');
+    const manywhotenant = currentUrl.pathname.split('/')[1];
 
-      dispatch(
-        setFlow(initializationResponse.data)
-      )
+    if (id && versionId && manywhotenant) {
+      try {
+        const runResponse = await runRequest(id, versionId, manywhotenant);
 
-    } catch(error) {
-      console.log(error);
+        const { currentMapElementId, stateId, stateToken } = runResponse.data;
+
+        const requestPayload = {
+          currentMapElementId,
+          stateId,
+          stateToken,
+          mapElementInvokeRequest: {},
+          invokeType: invokeType.FORWARD,
+        }
+
+        const initializationResponse: ServerResponse = await invokeRequest(
+          stateId, manywhotenant, requestPayload,
+        );
+  
+        const joinUri = initializationResponse.data.joinFlowUri.replace(baseUrl, '');
+        history.pushState(null, '', joinUri);
+  
+        dispatch(
+          setFlow(initializationResponse.data)
+        )
+  
+      } catch(error) {
+        console.log(error);
+      }
+    }
+
+    if (stateIdToJoin && !id && !versionId && manywhotenant) {
+      try {
+        const initializationResponse: ServerResponse = await joinRequest(
+          stateIdToJoin, manywhotenant,
+        );
+  
+        dispatch(
+          setFlow(initializationResponse.data)
+        )
+  
+      } catch(error) {
+        console.log(error);
+      }
     }
   }
 }

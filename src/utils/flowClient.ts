@@ -4,6 +4,20 @@ import { InvokeRequest } from '../interfaces/invokeRequest';
 
 const baseUrl = 'https://flow.manywho.com';
 
+export const runRequest = (id: string, versionId: string, manywhotenant: string) => {
+  return axios.post(
+    `${baseUrl}/api/run/1`, {
+      flowId: {
+        id,
+        versionId,
+      },
+    },
+    { headers: { manywhotenant } }
+  ).catch(error => {
+    throw Error(error.response.data)
+  });
+}
+
 export const initializationRequest = (id: string, versionId: string, manywhotenant: string) => {
   return axios.post(
     `${baseUrl}/api/run/1/state`, {
@@ -16,7 +30,17 @@ export const initializationRequest = (id: string, versionId: string, manywhotena
   });
 }
 
+export const joinRequest = (stateId: string, manywhotenant: string) => {
+  return axios.get(
+    `${baseUrl}/api/run/1/state/${stateId}`,
+    { headers: { manywhotenant } }
+  ).catch(error => {
+    throw Error(error.response.data)
+  });
+}
+
 export const invokeRequest = (stateId: string, manywhotenant: string, requestPayload: InvokeRequest) => {
+  console.log(`joined with ${stateId}`)
   return axios.post(
     `${baseUrl}/api/run/1/state/${stateId}`,
     requestPayload,
