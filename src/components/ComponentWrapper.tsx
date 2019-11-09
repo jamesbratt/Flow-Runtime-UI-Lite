@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { fetchServiceData, setSelected, setContentValue, syncFlow } from '../actions';
+import { fetchServiceData, moveWithSelection, setContentValue, syncFlow } from '../actions/pageStateActions';
 
 import {
   outcomeResponses,
@@ -65,7 +65,7 @@ const mapStateToProps = ({ pageState, componentRegistry }: any, ownProps: compon
 });
 
 const mapDispatchToProps = {
-  setSelected,
+  moveWithSelection,
   syncFlow,
   setContentValue,
   fetchServiceData,

@@ -17,16 +17,6 @@ interface SetLoaderAction {
   payload: boolean
 }
 
-interface SetSelectedAction {
-  type: typeof SET_SELECTED_OBJECT_DATA
-  payload: {
-    pageComponentId: string
-    externalId: string
-    isSelected: boolean
-    outcomeId: string | null 
-  }
-}
-
 interface SetContentValueAction {
   type: typeof SET_CONTENT_VALUE
   payload: {
@@ -50,4 +40,4 @@ interface SetComponentDataAction {
   }
 }
 
-export type pageStructureActionTypes = SetComponentDataAction | SetServiceDataAction | SetFlowAction | SetSelectedAction | SetContentValueAction | SetLoaderAction
+export type pageStructureActionTypes = SetComponentDataAction | SetServiceDataAction | SetFlowAction | SetContentValueAction | SetLoaderAction

@@ -14,13 +14,13 @@ interface ITable {
   pageComponent: pageComponentResponses,
   pageComponentData: pageComponentDataResponses,
   outcomeResponses: [outcomeResponses],
-  setSelected: Function,
+  moveWithSelection: Function,
 }
 
-const Table: React.FC<ITable> = ({ id, pageComponent, pageComponentData, outcomeResponses, setSelected }) => {
+const Table: React.FC<ITable> = ({ id, pageComponent, pageComponentData, outcomeResponses, moveWithSelection }) => {
 
   const selectRow = (outcomeId: string, objectData: objectData) => {
-    setSelected(
+    moveWithSelection(
       id,
       objectData.externalId,
       true,

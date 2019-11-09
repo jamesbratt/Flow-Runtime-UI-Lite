@@ -1,7 +1,7 @@
 import { InvokeResponse, objectDataRequest, mapElementInvokeResponses, pageComponentDataResponses } from '../interfaces/invokeResponse';
 import { InvokeRequest } from '../interfaces/invokeRequest';
 import { invokeType, objectData } from '../interfaces/common';
-import { joinRequest, initializationRequest, invokeRequest, runRequest, serviceDataRequest } from '../utils/flowClient';
+import { joinRequest, invokeRequest, runRequest, serviceDataRequest } from '../utils/flowClient';
 
 interface ServerResponse {
   data: any
@@ -16,7 +16,205 @@ export const setFlow = (invokeResponse: InvokeResponse) => {
   }
 }
 
-export const setSelected = (
+export const setContentValue = (pageComponentId: string, contentValue: string | number) => {
+  return {
+    type: 'SET_CONTENT_VALUE',
+    payload: { pageComponentId, contentValue }
+  }
+}
+
+export const isLoading = () => {
+  return {
+    type: 'IS_LOADING',
+    payload: true
+  }
+}
+
+/**
+ * @description Gets triggered when the root React component has mounted.
+ * Initialization can either invoke a new Flow "state" (thats state on the engine side...
+ * so a new instance of a running Flow) or join an existing state.
+ * 
+ * The logic is based on GET parameters specified in the url.
+ * So if a flow ID and version ID are specifed, then the UI will assume you
+ * want to invoke a new state for that Flow.
+ * 
+ * If no flow ID or version ID are specified, but a "join" parameter is
+ * specified, its value being a state ID, then that existing state is
+ * joined.
+ */
+export const initializeFlow = () => {
+  return async (dispatch: Function) => {
+
+    dispatch(
+      isLoading()
+    );
+
+    const currentUrl = window.location;
+    const urlParams = new URLSearchParams(currentUrl.search);
+
+    const stateIdToJoin = urlParams.get('join');
+    const id = urlParams.get('flow-id');
+    const versionId = urlParams.get('flow-version-id');
+    const manywhotenant = currentUrl.pathname.split('/')[1];
+
+    // We assume the user wants to create a new state...
+    if (id && versionId && manywhotenant) {
+      try {
+
+        // The run response gives us the new state ID and state token
+        // which is needed when making the very first invoke request
+        const runResponse = await runRequest(id, versionId, manywhotenant);
+
+        const { currentMapElementId, stateId, stateToken } = runResponse.data;
+
+        const requestPayload = {
+          currentMapElementId,
+          stateId,
+          stateToken,
+          mapElementInvokeRequest: {},
+          invokeType: invokeType.FORWARD,
+        }
+
+        // Make the invoke requests, the response of which will
+        // tell the UI what it needs to render
+        const initializationResponse: ServerResponse = await invokeRequest(
+          stateId, manywhotenant, requestPayload,
+        );
+  
+        // Update the url to a "join" url, so that if the page
+        // is refreshed in the browser a new state isnt invoked
+        const joinUri = initializationResponse.data.joinFlowUri.replace(baseUrl, '');
+        history.pushState(null, '', joinUri);
+  
+        // Set the invoke response in state
+        dispatch(
+          setFlow(initializationResponse.data)
+        )
+  
+      } catch(error) {
+        console.log(error);
+      }
+    }
+
+    // We assume the user wants to join an existing state
+    if (stateIdToJoin && !id && !versionId && manywhotenant) {
+      try {
+
+        // Go ahead and make an invoke request with the
+        // state ID specifed in the url
+        const initializationResponse: ServerResponse = await joinRequest(
+          stateIdToJoin, manywhotenant,
+        );
+  
+        // Set the invoke response in state
+        dispatch(
+          setFlow(initializationResponse.data)
+        )
+  
+      } catch(error) {
+        console.log(error);
+      }
+    }
+  }
+}
+
+/**
+ * 
+ * @param manywhotenant The tenant ID
+ * @param outcomeId A GUID identifying an outcome
+ * @description Typically triggered by the user clicking an outcome.
+ * We check the page component data that is currently in page state
+ * before constructing an invoke request payload to give to the engine
+ * to tell it what has changed in the current Flow state.
+ */
+export const moveFlow = (manywhotenant: string, outcomeId: string) => {
+  return async (dispatch: Function, getState: Function) => {
+
+    dispatch(
+      isLoading()
+    );
+
+    const { pageState } = getState();
+    const {
+      currentMapElementId,
+      stateId,
+      stateToken,
+      annotations,
+      selectedMapElementInvokeResponse,
+    } = pageState.invokeResponse;
+
+    // The component data that is currently in page state
+    const { pageComponentDataResponses } = selectedMapElementInvokeResponse.pageResponse;
+
+    /**
+     * When contructing the invoke request payload, the most
+     * important thing is what is being assigned to the mapElementInvokeRequest.
+     * For every page component in the UI page state, the engine is only concerned
+     * with knowing its contentValue, ID and objectdata... interestingly 
+     * when it comes to objectdata the engine is really fussy - we should only specify
+     * objects that have been marked as selected (and I guess if any of its properties have changed).
+     * You cannot just give it a components entire objectdata else you get a really
+     * unhelpful error.
+     */
+    const requestPayload: InvokeRequest = {
+      invokeType: invokeType.FORWARD,
+      stateId,
+      stateToken,
+      currentMapElementId,
+      annotations,
+      geoLocation: null,
+      mapElementInvokeRequest: {
+        pageRequest: {
+
+          // Telling the engine whats changed
+          pageComponentInputResponses: pageComponentDataResponses.map((component: any) => {
+            return {
+              objectData: component.objectData ? component.objectData.filter((od: any) => od.isSelected) : null,
+              contentValue: component.contentValue,
+              pageComponentId: component.pageComponentId,
+            }
+          }),
+        },
+
+        // Telling the engine where we want to go next in the Flow
+        selectedOutcomeId: outcomeId,
+      },
+      mode: null,
+      selectedMapElementId: null,
+      navigationElementId: null,
+      selectedNavigationElementId: null
+    };
+
+    try {
+      const moveResponse: ServerResponse = await invokeRequest(
+        stateId, manywhotenant, requestPayload,
+      );
+
+      dispatch(
+        setFlow(moveResponse.data)
+      )
+
+    } catch(error) {
+      console.log(error);
+    }
+  }
+}
+
+/**
+ * 
+ * @param pageComponentId GUID representing a page component
+ * @param externalId An ID representing a single objectdata
+ * @param isSelected 
+ * @param outcomeId 
+ * @param manywhotenant
+ * 
+ * @description Sometimes we need to move through a Flow based on an objectdata
+ * selection that has been made. An example of this would be when there is an
+ * outcome bound to every row in a table. In which case we need to specify the object
+ * (or row) that has been selected when constructing the invoke request payload.
+ */
+export const moveWithSelection = (
   pageComponentId: string,
   externalId: string,
   isSelected: boolean,
@@ -37,8 +235,13 @@ export const setSelected = (
       selectedMapElementInvokeResponse,
     } = pageState.invokeResponse;
 
+    // The component data that is currently in page state
     const { pageComponentDataResponses } = selectedMapElementInvokeResponse.pageResponse;
 
+    /**
+     * So here we are setting the specific object for the page component
+     * to marked as selected, before sending the payload off to the engine
+     */
     const pageComponentInputResponses = pageComponentDataResponses.map((component: pageComponentDataResponses) => {
       if (component.pageComponentId === pageComponentId) {
         return {
@@ -58,6 +261,8 @@ export const setSelected = (
         } 
       } 
       return component
+
+    // Remember... the engine only wants objects marked as selected - so fussy :-)
     }).map((component: pageComponentDataResponses) => {
       return {
         objectData: component.objectData ? component.objectData.filter((od: objectData) => od.isSelected) : null,
@@ -66,6 +271,9 @@ export const setSelected = (
       }
     });
 
+    // Construct the invoke response
+    // TODO: this can probably abstracted in some way,
+    // as this is the second time I am doing this.
     const requestPayload: InvokeRequest = {
       invokeType: invokeType.FORWARD,
       stateId,
@@ -100,140 +308,16 @@ export const setSelected = (
   }
 }
 
-export const setContentValue = (pageComponentId: string, contentValue: string | number) => {
-  return {
-    type: 'SET_CONTENT_VALUE',
-    payload: { pageComponentId, contentValue }
-  }
-}
-
-export const isLoading = () => {
-  return {
-    type: 'IS_LOADING',
-    payload: true
-  }
-}
-
-export const initializeFlow = () => {
-  return async (dispatch: Function) => {
-
-    dispatch(
-      isLoading()
-    );
-
-    const currentUrl = window.location;
-    const urlParams = new URLSearchParams(currentUrl.search);
-
-    const stateIdToJoin = urlParams.get('join');
-    const id = urlParams.get('flow-id');
-    const versionId = urlParams.get('flow-version-id');
-    const manywhotenant = currentUrl.pathname.split('/')[1];
-
-    if (id && versionId && manywhotenant) {
-      try {
-        const runResponse = await runRequest(id, versionId, manywhotenant);
-
-        const { currentMapElementId, stateId, stateToken } = runResponse.data;
-
-        const requestPayload = {
-          currentMapElementId,
-          stateId,
-          stateToken,
-          mapElementInvokeRequest: {},
-          invokeType: invokeType.FORWARD,
-        }
-
-        const initializationResponse: ServerResponse = await invokeRequest(
-          stateId, manywhotenant, requestPayload,
-        );
-  
-        const joinUri = initializationResponse.data.joinFlowUri.replace(baseUrl, '');
-        history.pushState(null, '', joinUri);
-  
-        dispatch(
-          setFlow(initializationResponse.data)
-        )
-  
-      } catch(error) {
-        console.log(error);
-      }
-    }
-
-    if (stateIdToJoin && !id && !versionId && manywhotenant) {
-      try {
-        const initializationResponse: ServerResponse = await joinRequest(
-          stateIdToJoin, manywhotenant,
-        );
-  
-        dispatch(
-          setFlow(initializationResponse.data)
-        )
-  
-      } catch(error) {
-        console.log(error);
-      }
-    }
-  }
-}
-
-export const clickOutcome = (manywhotenant: string, outcomeId: string) => {
-  return async (dispatch: Function, getState: Function) => {
-
-    dispatch(
-      isLoading()
-    );
-
-    const { pageState } = getState();
-    const {
-      currentMapElementId,
-      stateId,
-      stateToken,
-      annotations,
-      selectedMapElementInvokeResponse,
-    } = pageState.invokeResponse;
-
-    const { pageComponentDataResponses } = selectedMapElementInvokeResponse.pageResponse;
-
-    const requestPayload: InvokeRequest = {
-      invokeType: invokeType.FORWARD,
-      stateId,
-      stateToken,
-      currentMapElementId,
-      annotations,
-      geoLocation: null,
-      mapElementInvokeRequest: {
-        pageRequest: {
-          pageComponentInputResponses: pageComponentDataResponses.map((component: any) => {
-            return {
-              objectData: component.objectData ? component.objectData.filter((od: any) => od.isSelected) : null,
-              contentValue: component.contentValue,
-              pageComponentId: component.pageComponentId,
-            }
-          }),
-        },
-        selectedOutcomeId: outcomeId,
-      },
-      mode: null,
-      selectedMapElementId: null,
-      navigationElementId: null,
-      selectedNavigationElementId: null
-    };
-
-    try {
-      const moveResponse: ServerResponse = await invokeRequest(
-        stateId, manywhotenant, requestPayload,
-      );
-
-      dispatch(
-        setFlow(moveResponse.data)
-      )
-
-    } catch(error) {
-      console.log(error);
-    }
-  }
-}
-
+/**
+ * 
+ * @param manywhotenant 
+ * @description As far as I am aware, a sync request is only ever needed
+ * for when a page condition is triggered. Essentially, we tell the engine
+ * what page component data has changed and it responds with giving as all the page component
+ * data back again. Which may well have changed depending on what the engine received.
+ * No information is given back as to what page components are to be rendered
+ * by the UI as it is only the component data that is changed. 
+ */
 export const syncFlow = (manywhotenant: string) => {
   return async (dispatch: Function, getState: Function) => {
 
@@ -250,6 +334,7 @@ export const syncFlow = (manywhotenant: string) => {
       selectedMapElementInvokeResponse,
     } = pageState.invokeResponse;
 
+    // Same old... see comments in above actions ^^
     const { pageComponentDataResponses } = selectedMapElementInvokeResponse.pageResponse;
 
     const requestPayload: InvokeRequest = {
@@ -269,6 +354,9 @@ export const syncFlow = (manywhotenant: string) => {
             }
           }),
         },
+
+        // Oh yeah, we dont need this as we
+        // just want to stay on the current page
         selectedOutcomeId: null,
       },
       mode: null,

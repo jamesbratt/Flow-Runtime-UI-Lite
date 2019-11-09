@@ -3,7 +3,7 @@ import Container from './components/Container';
 import Outcome from './components/Outcome';
 import pathOr from 'ramda/src/pathOr';
 
-import { initializeFlow, clickOutcome } from './actions';
+import { initializeFlow, moveFlow } from './actions/pageStateActions';
 import { connect } from 'react-redux';
 
 import {
@@ -13,7 +13,7 @@ import {
 interface IApp {
   pageState: any,
   initializeFlow: Function,
-  clickOutcome: Function,
+  moveFlow: Function,
 }
 
 /**
@@ -34,7 +34,7 @@ class Flow extends React.Component<IApp, {}> {
   }
 
   onOutcomeClick = (outComeId: string) => {
-    this.props.clickOutcome('84980601-01a4-489c-bbff-870bd6a13120', outComeId)
+    this.props.moveFlow('84980601-01a4-489c-bbff-870bd6a13120', outComeId)
   }
 
   render() {
@@ -75,7 +75,7 @@ const mapStateToProps = ({ pageState }: any) => ({ pageState })
 
 const mapDispatchToProps = {
   initializeFlow,
-  clickOutcome,
+  moveFlow,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Flow);
