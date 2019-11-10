@@ -3,12 +3,12 @@
 A React/Redux web app written in TypeScript for running applications built using the
 [Boomi Flow](https://boomi.com/platform/flow/) platform.
 
-### Projects Goals
-
 This has been a learning exercise for me to become as familar as I can with the nuts and bolts
 of why applications built with Flow behave the way that they do, and how a runtime client should interact with the Flow runtime API.
 
-* Strict typing and interfaces.
+### Projects Goals
+
+* Adhere to using strict typing and interface definitions.
 * Easy to build and deploy.
 * Developer friendly. The project should be easy to run locally and have clear documentation and commenting throughout.
 * No more players. The UI should consume services that provide Flow specific settings and styling options.
@@ -20,11 +20,18 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 ## Getting set up
 
-In the project directory, you can run:
+First you will need to setup a dev specific environment variable for the Flow API base URL.
+Create a `.env.local` file in the project root and insert the following (replacing the URL):
+
+```
+REACT_APP_API_BASE_URL=https://example.com
+```
+
+Then in the project directory, you can run:
 
 ### `npm start`
 
-Runs the app in the development mode.<br />
+This runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 To initialze a new Flow state append your URL with:

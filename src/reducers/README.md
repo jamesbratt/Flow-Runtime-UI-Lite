@@ -1,7 +1,4 @@
-## Lets talk about Flow state
-
-So currently the Redux store is split into two parts - pageState and componentRegistry.
-These parts of the store are pretty self explanatory, but here goes...
+## Lets talk about application state
 
 ### Page State
 This tells our application what it needs to render. When the store is initially invoked, the page state
@@ -22,3 +19,12 @@ Page state is the single source of truth for the UI.
 Really simple - Just a bunch of key value pairs. The key being the component name and the value the
 corresponding React component. Holding this in our Redux store allows for React components to be rendered
 on the fly based on what components the page state is telling the UI to render.
+
+### Navigation
+TODO
+
+### Notifications
+TODO
+
+### Settings
+Such as tenant ID and theme

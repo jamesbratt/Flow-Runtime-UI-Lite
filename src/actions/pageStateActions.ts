@@ -10,14 +10,11 @@ import {
   IS_LOADING,
   SET_SERVICE_DATA,
   SET_COMPONENT_DATA,
-  IS_COMPONENT_FETCHING_SERVICE_DATA,
 } from '../actions/types';
 
 interface ServerResponse {
   data: any
 }
-
-const baseUrl = 'https://flow.manywho.com';
 
 /**
  * 
@@ -108,7 +105,7 @@ export const initializeFlow = () => {
   
         // Update the url to a "join" url, so that if the page
         // is refreshed in the browser a new state isnt invoked
-        const joinUri = initializationResponse.data.joinFlowUri.replace(baseUrl, '');
+        const joinUri = initializationResponse.data.joinFlowUri.replace(process.env.REACT_APP_API_BASE_URL, '');
         history.pushState(null, '', joinUri);
   
         // Set the invoke response in state

@@ -7,7 +7,7 @@ import axios from 'axios';
 import { objectDataRequest } from '../interfaces/invokeResponse';
 import { InvokeRequest } from '../interfaces/invokeRequest';
 
-const baseUrl = 'https://flow.manywho.com';
+const baseUrl = process.env.REACT_APP_API_BASE_URL;
 
 /**
  * 
