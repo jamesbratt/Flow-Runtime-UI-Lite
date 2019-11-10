@@ -1,11 +1,14 @@
 import React from 'react';
 
-const Input: React.FC<any> = ({ id, navigationItems }) => {
+const Input: React.FC<any> = ({ id, items, title }) => {
   
   return (
-    <ul>
-      {navigationItems.map((item: any) => <li>{item.label}</li>)}
-    </ul>
+    <div>
+      <h1>{title}</h1>
+      <ul>
+        {items.map((item: any) => <li><button>{item.label}</button></li>)}
+      </ul>
+    </div>
   );
 }
 
