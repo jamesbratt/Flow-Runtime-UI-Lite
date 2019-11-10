@@ -3,9 +3,11 @@ import Input from '../components/themes/material-ui/Input';
 import Navigation from '../components/themes/material-ui/Navigation';
 
 const registry = {
-  table: Table,
-  input: Input,
-  navigation: Navigation,
+  'material-ui': {
+    table: Table,
+    input: Input,
+    navigation: Navigation,
+  }
 }
 
 const componentRegistyReducer = (

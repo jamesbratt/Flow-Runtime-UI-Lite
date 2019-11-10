@@ -6,7 +6,7 @@ const Input: React.FC<any> = ({ id, items, title }) => {
     <div>
       <h1>{title}</h1>
       <ul>
-        {items.map((item: any) => <li><button>{item.label}</button></li>)}
+        {items.map((item: any) => <li key={item.id}><button>{item.label}</button></li>)}
       </ul>
     </div>
   );

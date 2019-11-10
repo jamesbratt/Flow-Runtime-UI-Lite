@@ -7,8 +7,9 @@ import { fetchNavigationData } from '../actions/navigationActions';
 interface navigationWrapperProps {
   id: string
   navigation: any
-  fetchNavigationData: Function,
-  componentRegistry: any,
+  fetchNavigationData: Function
+  componentRegistry: any
+  theme: string
 }
 
 /**
@@ -25,6 +26,7 @@ class NavigationWrapper extends React.Component<navigationWrapperProps, {}> {
 
   render() {
     if (this.props.navigation) {
+      const { componentRegistry, theme, id } = this.props;
       const { navigation } = this.props.navigation;
 
       /**
@@ -37,29 +39,30 @@ class NavigationWrapper extends React.Component<navigationWrapperProps, {}> {
       const navigationData: any = pathOr(null, ['navigationItemDataResponses'], navigation);
       const navigationItems: any = pathOr(null, ['navigationItemResponses'], navigation);
   
-      const data = navigationData ? navigationData.reduce(
+      const navItemsdata = navigationData ? navigationData.reduce(
         (item: any, data: any) => Object.assign(item, { [data.navigationItemId]: data }), {}
       ) : [];
   
       const items = navigationItems.map((item: any) => {
-        if (data[item.id]) {
-          return mergeDeepLeft(data[item.id], item);
+        if (navItemsdata[item.id]) {
+          return mergeDeepLeft(navItemsdata[item.id], item);
         } 
         return item
       })
 
-      const Navigation = this.props.componentRegistry['navigation'];
+      const Navigation = componentRegistry[theme]['navigation'];
 
-      return <Navigation id={this.props.id} items={items} title={navigation.label} />;
+      return <Navigation id={id} items={items} title={navigation.label} />;
     } 
 
     return <p>Navigation is loading...</p>;
   }
 }
 
-const mapStateToProps = ({ navigations, componentRegistry }: any, ownProps: any) => ({
+const mapStateToProps = ({ navigations, componentRegistry, settings }: any, ownProps: any) => ({
   navigation: navigations.find((nav: any) => nav.id === ownProps.id),
   componentRegistry,
+  theme: settings.theme,
 });
 
 const mapDispatchToProps = {

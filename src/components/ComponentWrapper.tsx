@@ -16,6 +16,7 @@ interface componentWrapperProps {
   componentRegistry: any,
   fetchServiceData: Function,
   componentType: string,
+  theme: string,
 }
 
 /**
@@ -42,8 +43,9 @@ class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
   }
 
   render() {
-    const Component = this.props.componentRegistry[this.props.componentType];
-    const { objectDataRequest, isFetchingObjectData } = this.props.pageComponentData;
+    const { theme, componentType, componentRegistry, pageComponentData } = this.props;
+    const Component = componentRegistry[theme][componentType];
+    const { objectDataRequest, isFetchingObjectData } = pageComponentData;
     return (
       <>
         {isFetchingObjectData && objectDataRequest ?
@@ -55,7 +57,7 @@ class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
   }
 }
 
-const mapStateToProps = ({ pageState, componentRegistry, componentsFetchingObjectData }: any, ownProps: componentWrapperProps) => ({
+const mapStateToProps = ({ pageState, componentRegistry, settings }: any, ownProps: componentWrapperProps) => ({
 
   pageComponent: pageState.invokeResponse.selectedMapElementInvokeResponse.pageResponse.pageComponentResponses.find(
     ((component: pageComponentResponses) => component.id === ownProps.id)
@@ -68,6 +70,7 @@ const mapStateToProps = ({ pageState, componentRegistry, componentsFetchingObjec
   outcomeResponses: pageState.invokeResponse.selectedMapElementInvokeResponse.outcomeResponses,
 
   componentRegistry,
+  theme: settings.theme,
 });
 
 const mapDispatchToProps = {
