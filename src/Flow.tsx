@@ -13,6 +13,7 @@ import {
 
 interface IApp {
   pageState: any,
+  notifications: any,
   initializeFlow: Function,
   moveFlow: Function,
 }
@@ -39,7 +40,7 @@ class Flow extends React.Component<IApp, {}> {
   }
 
   render() {
-    const { pageState } = this.props;
+    const { pageState, notifications } = this.props;
 
     // Root level page containers
     const containers: any = pathOr(
@@ -55,18 +56,21 @@ class Flow extends React.Component<IApp, {}> {
       pageState.invokeResponse
     );
 
-      // Navigation elements
-      const navigations: any = pathOr(
-        [],
-        ['navigationElementReferences'],
-        pageState.invokeResponse
-      );
+    // Navigation elements
+    const navigations: any = pathOr(
+      [],
+      ['navigationElementReferences'],
+      pageState.invokeResponse
+    );
 
     return (
       <div className="App">
         {pageState.isLoading ?
           <p>Loading...</p> :
           <>
+            {notifications.map((notification: any) => {
+              return <p>{notification}</p>
+            })}
             {navigations.map((navigation: any) => {
               return <NavigationWrapper key={navigation.id} id={navigation.id} />
             })}
@@ -82,7 +86,7 @@ class Flow extends React.Component<IApp, {}> {
   }
 }
 
-const mapStateToProps = ({ pageState }: any) => ({ pageState }) 
+const mapStateToProps = ({ pageState, notifications }: any) => ({ pageState, notifications }) 
 
 const mapDispatchToProps = {
   initializeFlow,

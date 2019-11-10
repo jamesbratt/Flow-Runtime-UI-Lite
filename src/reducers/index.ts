@@ -1,16 +1,17 @@
 import { combineReducers } from 'redux';
+
 import pageStateReducer from './pageState';
 import componentRegistyReducer from './componentRegistry';
-import componentsFetchingObjectDataReducer from './componentsFetchingObjectData';
 import settingsReducer from './settings';
-import naviagationReducer from './navigation';
+import navigationReducer from './navigation';
+import notificationsReducer from './notifications';
 
 const rootReducer = combineReducers({
   pageState: pageStateReducer,
   componentRegistry: componentRegistyReducer,
-  componentsFetchingObjectData: componentsFetchingObjectDataReducer,
   settings: settingsReducer,
-  navigations: naviagationReducer,
+  navigations: navigationReducer,
+  notifications: notificationsReducer,
 })
 
 export default rootReducer;

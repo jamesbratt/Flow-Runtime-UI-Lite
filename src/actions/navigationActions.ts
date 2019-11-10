@@ -1,4 +1,5 @@
 import { navigationRequest } from '../utils/flowClient';
+import { setNotification } from './notificationActions';
 
 /**
  * @param objectDataRequest payload to send when making an objectdata request.
@@ -34,7 +35,9 @@ export const fetchNavigationData = (
       })
   
     } catch(error) {
-      console.log(error);
+      dispatch(
+        setNotification(error)
+      )
     }
   }
 }

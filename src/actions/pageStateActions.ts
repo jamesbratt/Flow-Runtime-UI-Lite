@@ -2,6 +2,7 @@ import { InvokeResponse, objectDataRequest, mapElementInvokeResponses, pageCompo
 import { InvokeRequest } from '../interfaces/invokeRequest';
 import { invokeType, objectData } from '../interfaces/common';
 import { joinRequest, invokeRequest, runRequest, serviceDataRequest } from '../utils/flowClient';
+import { setNotification } from './notificationActions';
 
 import {
   SET_FLOW,
@@ -116,7 +117,9 @@ export const initializeFlow = () => {
         )
   
       } catch(error) {
-        console.log(error);
+        dispatch(
+          setNotification(error)
+        )
       }
     }
 
@@ -136,8 +139,16 @@ export const initializeFlow = () => {
         )
   
       } catch(error) {
-        console.log(error);
+        dispatch(
+          setNotification(error)
+        )
       }
+    }
+
+    if (!stateIdToJoin && !id && !versionId && !manywhotenant) {
+      dispatch(
+        setNotification('No Flow ID, Flow version ID or state ID have been specified as GET parameters in the URL')
+      )
     }
   }
 }
@@ -220,7 +231,9 @@ export const moveFlow = (outcomeId: string) => {
       )
 
     } catch(error) {
-      console.log(error);
+      dispatch(
+        setNotification(error)
+      )
     }
   }
 }
@@ -326,7 +339,9 @@ export const moveWithSelection = (
       )
 
     } catch(error) {
-      console.log(error);
+      dispatch(
+        setNotification(error)
+      )
     }
   }
 }
@@ -407,7 +422,9 @@ export const syncFlow = () => {
       })
 
     } catch(error) {
-      console.log(error);
+      dispatch(
+        setNotification(error)
+      )
     }
   }
 }
@@ -429,11 +446,6 @@ export const fetchServiceData = (
     const { settings } = getState();
     const manywhotenant = settings.tenantId;
 
-    dispatch({
-      type: IS_COMPONENT_FETCHING_SERVICE_DATA,
-      payload: pageComponentId      
-    })
-
     try {
       const objectDataResponse: ServerResponse = await serviceDataRequest(
         manywhotenant, objectDataRequest,
@@ -445,7 +457,9 @@ export const fetchServiceData = (
       })
   
     } catch(error) {
-      console.log(error);
+      dispatch(
+        setNotification(error)
+      )
     }
   }
 }

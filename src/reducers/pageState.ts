@@ -56,6 +56,7 @@ const pageStateReducer = (
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: pageComponentDataResponses) => {
+              component.isFetchingObjectData = true;
               if (syncedData[component.pageComponentId]) {
                 return mergeDeepLeft(syncedData[component.pageComponentId], component);
               } 
@@ -84,6 +85,7 @@ const pageStateReducer = (
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: pageComponentDataResponses) => {
+              delete component.isFetchingObjectData;
               if (component.pageComponentId === pageComponentId) {
                 return mergeDeepLeft(objectDataResponse, component);
               } 
@@ -141,6 +143,16 @@ const pageStateReducer = (
         const mapElementInvokeResponse = action.payload.mapElementInvokeResponses.find(
           (response: mapElementInvokeResponses) => response.mapElementId === action.payload.currentMapElementId
         );
+
+        if (mapElementInvokeResponse) {
+          mapElementInvokeResponse.pageResponse.pageComponentDataResponses.map((component: pageComponentDataResponses) => {
+            if (component.objectDataRequest) {
+              component.isFetchingObjectData = true;
+            } 
+            return component
+          })
+        }
+
         return {
           ...page,
           isLoading: false,
@@ -154,6 +166,13 @@ const pageStateReducer = (
       return {
         ...page,
         isLoading: action.payload,
+      }
+    }
+
+    case 'SET_NOTIFICATION': {
+      return {
+        ...page,
+        isLoading: false,
       }
     }
 
