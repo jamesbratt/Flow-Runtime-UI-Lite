@@ -56,6 +56,9 @@ const pageStateReducer = (
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: pageComponentDataResponses) => {
+
+              // Adding a flag so the component knows it
+              // will be waiting to receive objectdata from a service
               component.isFetchingObjectData = true;
               if (syncedData[component.pageComponentId]) {
                 return mergeDeepLeft(syncedData[component.pageComponentId], component);
@@ -85,6 +88,8 @@ const pageStateReducer = (
           invokeResponse: assocPath(
             ['selectedMapElementInvokeResponse', 'pageResponse', 'pageComponentDataResponses'],
             pageComponentDataResponses.map((component: pageComponentDataResponses) => {
+
+              // This flag is no longer needed
               delete component.isFetchingObjectData;
               if (component.pageComponentId === pageComponentId) {
                 return mergeDeepLeft(objectDataResponse, component);
@@ -147,6 +152,9 @@ const pageStateReducer = (
         if (mapElementInvokeResponse) {
           mapElementInvokeResponse.pageResponse.pageComponentDataResponses.map((component: pageComponentDataResponses) => {
             if (component.objectDataRequest) {
+
+              // Adding a flag so the component knows it
+              // will be waiting to receive objectdata from a service
               component.isFetchingObjectData = true;
             } 
             return component
