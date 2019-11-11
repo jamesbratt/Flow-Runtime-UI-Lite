@@ -45,6 +45,11 @@ class ComponentWrapper extends React.Component<componentWrapperProps, {}> {
   render() {
     const { theme, componentType, componentRegistry, pageComponentData } = this.props;
     const Component = componentRegistry[theme][componentType];
+
+    if (!Component) {
+      return <p>{`The component of type "${componentType}" is not currently supported`}</p>
+    }
+
     const { objectDataRequest, isFetchingObjectData } = pageComponentData;
     return (
       <>
